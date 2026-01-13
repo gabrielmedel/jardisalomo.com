@@ -30,6 +30,7 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
     user: Users.slug,
+    theme: 'light',
     livePreview: {
       breakpoints: [
         {
@@ -52,6 +53,15 @@ export default buildConfig({
         },
       ],
     },
+  },
+  // i18n controls the UI language of the admin panel
+  i18n: {
+    fallbackLanguage: 'es',
+  },
+  localization: {
+    locales: ['es', 'ca', 'en'],
+    defaultLocale: 'ca',
+    fallback: true,
   },
   // This config helps us configure global or default features that the other editors can inherit
   editor: defaultLexical,

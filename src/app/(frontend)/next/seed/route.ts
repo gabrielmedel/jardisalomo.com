@@ -1,5 +1,6 @@
 import { createLocalReq, getPayload } from 'payload'
-import { seed } from '@/endpoints/seed'
+// TODO: Implement seed functionality
+// import { seed } from '@/endpoints/seed'
 import config from '@payload-config'
 import { headers } from 'next/headers'
 
@@ -21,9 +22,10 @@ export async function POST(): Promise<Response> {
     // At this point you should pass in a user, locale, and any other context you need for the Local API
     const payloadReq = await createLocalReq({ user }, payload)
 
-    await seed({ payload, req: payloadReq })
-
-    return Response.json({ success: true })
+    // TODO: Implement seed functionality
+    // await seed({ payload, req: payloadReq })
+    
+    return Response.json({ success: false, message: 'Seed functionality not implemented yet' })
   } catch (e) {
     payload.logger.error({ err: e, message: 'Error seeding data' })
     return new Response('Error seeding data.', { status: 500 })
