@@ -5,6 +5,7 @@ import { Plugin } from 'payload'
 import { revalidateRedirects } from '@/hooks/revalidateRedirects'
 import { GenerateTitle, GenerateURL } from '@payloadcms/plugin-seo/types'
 import { FixedToolbarFeature, HeadingFeature, lexicalEditor } from '@payloadcms/richtext-lexical'
+import { aiLocalization } from 'payload-plugin-ai-localization'
 
 import { Page } from '@/payload-types'
 import { getServerSideURL } from '@/utilities/getURL'
@@ -72,4 +73,20 @@ export const plugins: Plugin[] = [
       },
     },
   }),
+  // AI Localization plugin - Only enabled if OPENAI_API_KEY is set
+  ...(process.env.OPENAI_API_KEY
+    ? [
+        aiLocalization({
+          openai: {
+            apiKey: process.env.OPENAI_API_KEY,
+            model: 'gpt-4o-mini', // Using more economical model
+          },
+          collections: {
+            pages: {
+              fields: ['title'],
+            },
+          },
+        }),
+      ]
+    : []),
 ]
