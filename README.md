@@ -10,18 +10,36 @@ This template is right for you if you are working on:
 
 Core features:
 
-- [Pre-configured Payload Config](#how-it-works)
-- [Authentication](#users-authentication)
-- [Access Control](#access-control)
-- [Layout Builder](#layout-builder)
-- [Draft Preview](#draft-preview)
-- [Live Preview](#live-preview)
-- [On-demand Revalidation](#on-demand-revalidation)
-- [SEO](#seo)
-- [Search](#search)
-- [Redirects](#redirects)
-- [Jobs and Scheduled Publishing](#jobs-and-scheduled-publish)
-- [Website](#website)
+- [Payload Website Template](#payload-website-template)
+  - [Quick Start](#quick-start)
+    - [Clone](#clone)
+    - [Development](#development)
+  - [How it works](#how-it-works)
+    - [Collections](#collections)
+    - [Globals](#globals)
+  - [Access control](#access-control)
+  - [Layout Builder](#layout-builder)
+  - [Lexical editor](#lexical-editor)
+  - [Draft Preview](#draft-preview)
+  - [Live preview](#live-preview)
+  - [On-demand Revalidation](#on-demand-revalidation)
+  - [SEO](#seo)
+  - [Search](#search)
+  - [Redirects](#redirects)
+  - [Jobs and Scheduled Publish](#jobs-and-scheduled-publish)
+  - [Website](#website)
+    - [Cache](#cache)
+  - [Development](#development-1)
+    - [Working with Postgres](#working-with-postgres)
+      - [Inicializar Base de Datos PostgreSQL](#inicializar-base-de-datos-postgresql)
+      - [Local development](#local-development)
+      - [Migrations](#migrations)
+    - [Docker](#docker)
+    - [Seed](#seed)
+  - [Production](#production)
+    - [Deploying to Vercel](#deploying-to-vercel)
+    - [Self-hosting](#self-hosting)
+  - [Questions](#questions)
 
 ## Quick Start
 
@@ -185,6 +203,52 @@ To spin up this example locally, follow the [Quick Start](#quick-start). Then [S
 Postgres and other SQL-based databases follow a strict schema for managing your data. In comparison to our MongoDB adapter, this means that there's a few extra steps to working with Postgres.
 
 Note that often times when making big schema changes you can run the risk of losing data if you're not manually migrating it.
+
+#### Inicializar Base de Datos PostgreSQL
+
+Para iniciar una base de datos PostgreSQL en local usando Docker, ejecuta el siguiente comando:
+
+```bash
+docker run -d \
+  --name payloadcms-jardisalomo-postgres \
+  -e POSTGRES_USER=postgres \
+  -e POSTGRES_PASSWORD=password \
+  -e POSTGRES_DB=payloadcms-jardisalomo \
+  -p 5432:5432 \
+  -v postgres_data:/var/lib/postgresql/data \
+  postgres:16-alpine
+```
+
+Este comando:
+
+- Crea un contenedor llamado `payloadcms-jardisalomo-postgres`
+- Configura la base de datos con las credenciales: `postgres://postgres:password@127.0.0.1:5432/payloadcms-jardisalomo`
+- Mapea el puerto 5432 para acceso local
+- Persiste los datos en un volumen llamado `postgres_data`
+
+Para verificar que PostgreSQL está corriendo:
+
+```bash
+docker ps | grep payloadcms-jardisalomo-postgres
+```
+
+Para detener el contenedor:
+
+```bash
+docker stop payloadcms-jardisalomo-postgres
+```
+
+Para iniciar el contenedor nuevamente:
+
+```bash
+docker start payloadcms-jardisalomo-postgres
+```
+
+Para eliminar el contenedor (⚠️ esto NO elimina los datos del volumen):
+
+```bash
+docker rm payloadcms-jardisalomo-postgres
+```
 
 #### Local development
 

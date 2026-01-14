@@ -23,15 +23,9 @@ importers:
       '@payloadcms/plugin-form-builder':
         specifier: 3.70.0
         version: 3.70.0(@types/react@19.2.1)(monaco-editor@0.55.1)(next@15.4.10(@babel/core@7.28.6)(@playwright/test@1.56.1)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(sass@1.77.4))(payload@3.70.0(graphql@16.12.0)(typescript@5.7.3))(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(typescript@5.7.3)
-      '@payloadcms/plugin-nested-docs':
-        specifier: 3.70.0
-        version: 3.70.0(payload@3.70.0(graphql@16.12.0)(typescript@5.7.3))
       '@payloadcms/plugin-redirects':
         specifier: 3.70.0
         version: 3.70.0(payload@3.70.0(graphql@16.12.0)(typescript@5.7.3))
-      '@payloadcms/plugin-search':
-        specifier: 3.70.0
-        version: 3.70.0(@types/react@19.2.1)(graphql@16.12.0)(monaco-editor@0.55.1)(next@15.4.10(@babel/core@7.28.6)(@playwright/test@1.56.1)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(sass@1.77.4))(payload@3.70.0(graphql@16.12.0)(typescript@5.7.3))(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(typescript@5.7.3)
       '@payloadcms/plugin-seo':
         specifier: 3.70.0
         version: 3.70.0(@types/react@19.2.1)(monaco-editor@0.55.1)(next@15.4.10(@babel/core@7.28.6)(@playwright/test@1.56.1)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(sass@1.77.4))(payload@3.70.0(graphql@16.12.0)(typescript@5.7.3))(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(typescript@5.7.3)
@@ -80,6 +74,9 @@ importers:
       next-sitemap:
         specifier: ^4.2.3
         version: 4.2.3(next@15.4.10(@babel/core@7.28.6)(@playwright/test@1.56.1)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(sass@1.77.4))
+      openai:
+        specifier: ^6.16.0
+        version: 6.16.0(ws@8.19.0)(zod@3.25.76)
       payload:
         specifier: 3.70.0
         version: 3.70.0(graphql@16.12.0)(typescript@5.7.3)
@@ -1417,22 +1414,10 @@ packages:
       react: ^19.0.1 || ^19.1.2 || ^19.2.1
       react-dom: ^19.0.1 || ^19.1.2 || ^19.2.1
 
-  '@payloadcms/plugin-nested-docs@3.70.0':
-    resolution: {integrity: sha512-FJt6AxHe87IqrKnZihnxX/M11fCikwl0olWdTiYkY1TBHAnjAiLMd8BUkKKJC6+wiMtAhZ0KgvOBh1h3DKC7ZQ==}
-    peerDependencies:
-      payload: 3.70.0
-
   '@payloadcms/plugin-redirects@3.70.0':
     resolution: {integrity: sha512-qoHAiKGyM01DwKJA7qzsXsVsr4Sk1k/eiGMhFdzZzcb4Tov5k8OBH67uQ/f2wAYDQAvI6V6IU/iSn2TnmxayOw==}
     peerDependencies:
       payload: 3.70.0
-
-  '@payloadcms/plugin-search@3.70.0':
-    resolution: {integrity: sha512-9bsgx6YCmEZYDkR2l6kShuU0ME0EwYRHpRLUG6pbtLP3PI+RX9ZSK3wxxGwIDIga8dCfZy4whpwq6tdbI8ehRg==}
-    peerDependencies:
-      payload: 3.70.0
-      react: ^19.0.1 || ^19.1.2 || ^19.2.1
-      react-dom: ^19.0.1 || ^19.1.2 || ^19.2.1
 
   '@payloadcms/plugin-seo@3.70.0':
     resolution: {integrity: sha512-NUb7EwQoegzDgmYacyIxOt+OfrL/pzeYAY4r2lNNQ04t8iJmoIhDYhcRjjFxVkL/RXfNwP9f526ieK/KrdasrA==}
@@ -3802,6 +3787,18 @@ packages:
   once@1.4.0:
     resolution: {integrity: sha512-lNaJgI+2Q5URQBkccEKHTQOPaXdUxnZZElQTZY0MFUAuaEqe1E+Nyvgdz/aIyNi6Z9MzO5dv1H8n58/GELp3+w==}
 
+  openai@6.16.0:
+    resolution: {integrity: sha512-fZ1uBqjFUjXzbGc35fFtYKEOxd20kd9fDpFeqWtsOZWiubY8CZ1NAlXHW3iathaFvqmNtCWMIsosCuyeI7Joxg==}
+    hasBin: true
+    peerDependencies:
+      ws: ^8.18.0
+      zod: ^3.25 || ^4.0
+    peerDependenciesMeta:
+      ws:
+        optional: true
+      zod:
+        optional: true
+
   optionator@0.9.4:
     resolution: {integrity: sha512-6IpQ7mKUxRcZNLIObR0hz7lxsapSSIYNZJwXPGeF0mTVqGKFIXj1DQcMoT22S3ROcLyY/rz0PWaWZ9ayWmad9g==}
     engines: {node: '>= 0.8.0'}
@@ -4959,6 +4956,9 @@ packages:
   yocto-queue@0.1.0:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
     engines: {node: '>=10'}
+
+  zod@3.25.76:
+    resolution: {integrity: sha512-gzUt/qt81nXsFGKIFcC3YnfEAx5NkunCfnDlvuBSSFS02bcXu4Lmea0AFIUwbLWxWPx3d9p8S5QoaujKcNQxcQ==}
 
   zwitch@2.0.4:
     resolution: {integrity: sha512-bXE4cR/kVZhKZX/RjPEflHaKVhUVl85noU3v6b8apfQEc1x4A+zBxjZ4lN8LqGd6WZ3dl98pY4o717VFmoPp+A==}
@@ -6132,29 +6132,10 @@ snapshots:
       - supports-color
       - typescript
 
-  '@payloadcms/plugin-nested-docs@3.70.0(payload@3.70.0(graphql@16.12.0)(typescript@5.7.3))':
-    dependencies:
-      payload: 3.70.0(graphql@16.12.0)(typescript@5.7.3)
-
   '@payloadcms/plugin-redirects@3.70.0(payload@3.70.0(graphql@16.12.0)(typescript@5.7.3))':
     dependencies:
       '@payloadcms/translations': 3.70.0
       payload: 3.70.0(graphql@16.12.0)(typescript@5.7.3)
-
-  '@payloadcms/plugin-search@3.70.0(@types/react@19.2.1)(graphql@16.12.0)(monaco-editor@0.55.1)(next@15.4.10(@babel/core@7.28.6)(@playwright/test@1.56.1)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(sass@1.77.4))(payload@3.70.0(graphql@16.12.0)(typescript@5.7.3))(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(typescript@5.7.3)':
-    dependencies:
-      '@payloadcms/next': 3.70.0(@types/react@19.2.1)(graphql@16.12.0)(monaco-editor@0.55.1)(next@15.4.10(@babel/core@7.28.6)(@playwright/test@1.56.1)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(sass@1.77.4))(payload@3.70.0(graphql@16.12.0)(typescript@5.7.3))(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(typescript@5.7.3)
-      '@payloadcms/ui': 3.70.0(@types/react@19.2.1)(monaco-editor@0.55.1)(next@15.4.10(@babel/core@7.28.6)(@playwright/test@1.56.1)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(sass@1.77.4))(payload@3.70.0(graphql@16.12.0)(typescript@5.7.3))(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(typescript@5.7.3)
-      payload: 3.70.0(graphql@16.12.0)(typescript@5.7.3)
-      react: 19.2.1
-      react-dom: 19.2.1(react@19.2.1)
-    transitivePeerDependencies:
-      - '@types/react'
-      - graphql
-      - monaco-editor
-      - next
-      - supports-color
-      - typescript
 
   '@payloadcms/plugin-seo@3.70.0(@types/react@19.2.1)(monaco-editor@0.55.1)(next@15.4.10(@babel/core@7.28.6)(@playwright/test@1.56.1)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(sass@1.77.4))(payload@3.70.0(graphql@16.12.0)(typescript@5.7.3))(react-dom@19.2.1(react@19.2.1))(react@19.2.1)(typescript@5.7.3)':
     dependencies:
@@ -8775,6 +8756,11 @@ snapshots:
     dependencies:
       wrappy: 1.0.2
 
+  openai@6.16.0(ws@8.19.0)(zod@3.25.76):
+    optionalDependencies:
+      ws: 8.19.0
+      zod: 3.25.76
+
   optionator@0.9.4:
     dependencies:
       deep-is: 0.1.4
@@ -10126,5 +10112,8 @@ snapshots:
       lib0: 0.2.117
 
   yocto-queue@0.1.0: {}
+
+  zod@3.25.76:
+    optional: true
 
   zwitch@2.0.4: {}
