@@ -5,7 +5,7 @@ import { Plugin } from 'payload'
 import { revalidateRedirects } from '@/hooks/revalidateRedirects'
 import { GenerateTitle, GenerateURL } from '@payloadcms/plugin-seo/types'
 import { FixedToolbarFeature, HeadingFeature, lexicalEditor } from '@payloadcms/richtext-lexical'
-import { aiLocalization } from 'payload-plugin-ai-localization'
+import { aiTranslationPlugin } from './ai-translation'
 
 import { Page } from '@/payload-types'
 import { getServerSideURL } from '@/utilities/getURL'
@@ -73,20 +73,27 @@ export const plugins: Plugin[] = [
       },
     },
   }),
-  // AI Localization plugin - Only enabled if OPENAI_API_KEY is set
-  ...(process.env.OPENAI_API_KEY
-    ? [
-        aiLocalization({
-          openai: {
-            apiKey: process.env.OPENAI_API_KEY,
-            model: 'gpt-4o-mini', // Using more economical model
-          },
-          collections: {
-            pages: {
-              fields: ['title'],
-            },
-          },
-        }),
-      ]
-    : []),
 ]
+
+// AI Translation plugin - DEBE IR AL FINAL para no ser sobrescrito
+export const aiTranslationPluginInstance = process.env.OPENAI_API_KEY
+  ? aiTranslationPlugin({
+      enabled: true,
+      openai: {
+        apiKey: process.env.OPENAI_API_KEY,
+        model: 'gpt-4o-mini',
+      },
+      collections: ['pages'], // Qué collections traducir
+      globals: ['header', 'footer'], // Qué globals traducir
+      // Opcional: especificar qué fields traducir por collection
+      // Si no se especifica, traduce TODOS los campos localizados
+      fields: {
+        // pages: ['title', 'hero.richText'], // Solo estos fields
+        // Si no especificas 'pages' aquí, traduce TODOS los campos localizados
+      },
+    })
+  : undefined
+
+export const allPlugins = aiTranslationPluginInstance
+  ? [...plugins, aiTranslationPluginInstance]
+  : plugins

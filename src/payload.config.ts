@@ -1,15 +1,16 @@
 import { postgresAdapter } from '@payloadcms/db-postgres'
 import sharp from 'sharp'
-import path from 'path'
+import path from 'node:path'
 import { buildConfig, PayloadRequest } from 'payload'
-import { fileURLToPath } from 'url'
+import { fileURLToPath } from 'node:url'
+import { es } from 'payload/i18n/es'
 
 import { Media } from './collections/Media'
 import { Pages } from './collections/Pages'
 import { Users } from './collections/Users'
 import { Footer } from './Footer/config'
 import { Header } from './Header/config'
-import { plugins } from './plugins'
+import { allPlugins } from './plugins'
 import { defaultLexical } from '@/fields/defaultLexical'
 import { getServerSideURL } from './utilities/getURL'
 
@@ -56,6 +57,7 @@ export default buildConfig({
   },
   // i18n controls the UI language of the admin panel
   i18n: {
+    supportedLanguages: { es },
     fallbackLanguage: 'es',
   },
   localization: {
@@ -73,7 +75,7 @@ export default buildConfig({
   collections: [Pages, Media, Users],
   cors: [getServerSideURL()].filter(Boolean),
   globals: [Header, Footer],
-  plugins,
+  plugins: allPlugins,
   secret: process.env.PAYLOAD_SECRET,
   sharp,
   typescript: {

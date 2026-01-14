@@ -37,6 +37,9 @@ export const Pages: CollectionConfig<'pages'> = {
   },
   admin: {
     defaultColumns: ['title', 'slug', 'updatedAt'],
+    components: {
+      beforeList: ['@/plugins/ai-translation/client/BulkTranslateAction'],
+    },
     livePreview: {
       url: ({ data, req }) =>
         generatePreviewPath({
