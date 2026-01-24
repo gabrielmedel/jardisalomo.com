@@ -1,0 +1,98 @@
+/**
+* @license
+*
+* Font Family: Gambetta
+* Designed by: Paul Troppmar
+* URL: https://www.fontshare.com/fonts/gambetta
+* © 2025 Indian Type Foundry
+*/
+
+@font-face {
+  font-family: 'Gambetta';
+  src: url('/fonts/gambetta/Gambetta-Light.woff2') format('woff2'),
+       url('/fonts/gambetta/Gambetta-Light.woff') format('woff');
+  font-weight: 300;
+  font-display: swap;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Gambetta';
+  src: url('/fonts/gambetta/Gambetta-LightItalic.woff2') format('woff2'),
+       url('/fonts/gambetta/Gambetta-LightItalic.woff') format('woff');
+  font-weight: 300;
+  font-display: swap;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'Gambetta';
+  src: url('/fonts/gambetta/Gambetta-Regular.woff2') format('woff2'),
+       url('/fonts/gambetta/Gambetta-Regular.woff') format('woff');
+  font-weight: 400;
+  font-display: swap;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Gambetta';
+  src: url('/fonts/gambetta/Gambetta-Italic.woff2') format('woff2'),
+       url('/fonts/gambetta/Gambetta-Italic.woff') format('woff');
+  font-weight: 400;
+  font-display: swap;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'Gambetta';
+  src: url('/fonts/gambetta/Gambetta-Medium.woff2') format('woff2'),
+       url('/fonts/gambetta/Gambetta-Medium.woff') format('woff');
+  font-weight: 500;
+  font-display: swap;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Gambetta';
+  src: url('/fonts/gambetta/Gambetta-MediumItalic.woff2') format('woff2'),
+       url('/fonts/gambetta/Gambetta-MediumItalic.woff') format('woff');
+  font-weight: 500;
+  font-display: swap;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'Gambetta';
+  src: url('/fonts/gambetta/Gambetta-Semibold.woff2') format('woff2'),
+       url('/fonts/gambetta/Gambetta-Semibold.woff') format('woff');
+  font-weight: 600;
+  font-display: swap;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Gambetta';
+  src: url('/fonts/gambetta/Gambetta-SemiboldItalic.woff2') format('woff2'),
+       url('/fonts/gambetta/Gambetta-SemiboldItalic.woff') format('woff');
+  font-weight: 600;
+  font-display: swap;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'Gambetta';
+  src: url('/fonts/gambetta/Gambetta-Bold.woff2') format('woff2'),
+       url('/fonts/gambetta/Gambetta-Bold.woff') format('woff');
+  font-weight: 700;
+  font-display: swap;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Gambetta';
+  src: url('/fonts/gambetta/Gambetta-BoldItalic.woff2') format('woff2'),
+       url('/fonts/gambetta/Gambetta-BoldItalic.woff') format('woff');
+  font-weight: 700;
+  font-display: swap;
+  font-style: italic;
+}

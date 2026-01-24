@@ -3,9 +3,13 @@
 import { useState } from 'react'
 import { useConfig, useSelection, Button } from '@payloadcms/ui'
 import { usePathname } from 'next/navigation'
+import { CustomModal } from './CustomModal'
+import styles from './BulkTranslateAction.module.scss'
 
 export default function BulkTranslateAction() {
   const [isTranslating, setIsTranslating] = useState(false)
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [targetLocale, setTargetLocale] = useState('')
   const { config } = useConfig()
   const { selectedIDs } = useSelection()
   const pathname = usePathname()
@@ -30,33 +34,36 @@ export default function BulkTranslateAction() {
     return null
   }
 
+  // Filtrar locales disponibles (excluir el default)
+  const targetLocales = availableLocales
+    .filter((l: any) => {
+      const code = typeof l === 'string' ? l : l.code
+      return code !== defaultLocale
+    })
+    .map((l: any) => {
+      if (typeof l === 'string') {
+        return { code: l, label: l }
+      }
+      return { code: l.code, label: l.label || l.code }
+    })
+
+  const handleOpenModal = () => {
+    setTargetLocale(targetLocales[0]?.code || '')
+    setIsModalOpen(true)
+  }
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false)
+  }
+
   const handleBulkTranslate = async () => {
-    // Selector de idioma destino
-    const localeOptions = availableLocales
-      .filter((l: any) => {
-        const code = typeof l === 'string' ? l : l.code
-        return code !== defaultLocale
-      })
-      .map((l: any) => (typeof l === 'string' ? l : l.code))
-      .join(', ')
-
-    const targetLocale = prompt(
-      `Traducir ${selectedIds.length} documento(s) a qué idioma? (${localeOptions})`,
-    )
-
     if (!targetLocale || targetLocale === defaultLocale) {
       return
     }
 
-    if (
-      !confirm(
-        `¿Traducir ${selectedIds.length} documento(s) de ${defaultLocale} a ${targetLocale}?`,
-      )
-    ) {
-      return
-    }
-
+    setIsModalOpen(false)
     setIsTranslating(true)
+
     try {
       const response = await fetch('/api/translate-bulk', {
         method: 'POST',
@@ -74,7 +81,6 @@ export default function BulkTranslateAction() {
         throw new Error(error.message || 'Bulk translation failed')
       }
 
-      alert('Traducción completada exitosamente')
       window.location.reload()
     } catch (error) {
       alert(
@@ -87,16 +93,60 @@ export default function BulkTranslateAction() {
   }
 
   return (
-    <div style={{ padding: '1rem', borderBottom: '1px solid var(--theme-elevation-200)' }}>
-      <Button
-        onClick={handleBulkTranslate}
-        disabled={isTranslating}
-        buttonStyle="primary"
-        icon="translate"
-        size="small"
+    <>
+      <div className={styles.buttonWrapper}>
+        <Button
+          onClick={handleOpenModal}
+          disabled={isTranslating}
+          buttonStyle="primary"
+          icon="translate"
+          size="small"
+        >
+          {isTranslating ? 'Traduciendo...' : `Traducir ${selectedIds.length} documento(s)`}
+        </Button>
+      </div>
+
+      <CustomModal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        title={`Traducir ${selectedIds.length} documento(s)`}
       >
-        {isTranslating ? 'Traduciendo...' : `Traducir ${selectedIds.length} documento(s)`}
-      </Button>
-    </div>
+        <div className={styles.formGroup}>
+          <label htmlFor="target-locale" className={styles.label}>
+            Idioma destino
+          </label>
+          <select
+            id="target-locale"
+            value={targetLocale}
+            onChange={(e) => setTargetLocale(e.target.value)}
+            className={styles.select}
+          >
+            {targetLocales.map((locale) => (
+              <option key={locale.code} value={locale.code}>
+                {locale.label}
+              </option>
+            ))}
+          </select>
+          <p className={styles.hint}>
+            Los documentos se traducirán de <strong>{defaultLocale}</strong> a{' '}
+            <strong>{targetLocale}</strong>
+          </p>
+        </div>
+
+        <div className={styles.actions}>
+          <Button onClick={handleCloseModal} buttonStyle="secondary">
+            Cancelar
+          </Button>
+          <Button
+            onClick={handleBulkTranslate}
+            disabled={isTranslating || !targetLocale}
+            buttonStyle="primary"
+            icon="translate"
+          >
+            {isTranslating ? 'Traduciendo...' : 'Traducir'}
+          </Button>
+        </div>
+      </CustomModal>
+    </>
   )
 }

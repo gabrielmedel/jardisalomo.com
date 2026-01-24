@@ -27,6 +27,12 @@ const nextConfig = {
       '.mjs': ['.mts', '.mjs'],
     }
 
+    // Permitir importar SVGs (p.ej. iconos) como URL estática
+    webpackConfig.module.rules.push({
+      test: /\.svg$/i,
+      type: 'asset/resource',
+    })
+
     return webpackConfig
   },
   reactStrictMode: true,

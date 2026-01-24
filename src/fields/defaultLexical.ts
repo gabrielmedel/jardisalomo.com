@@ -7,7 +7,11 @@ import {
   lexicalEditor,
   UnderlineFeature,
   type LinkFields,
+  InlineToolbarFeature,
+  FixedToolbarFeature,
+  HeadingFeature,
 } from '@payloadcms/richtext-lexical'
+import { PayloadAiPluginLexicalEditorFeature } from '@ai-stack/payloadcms'
 
 export const defaultLexical = lexicalEditor({
   features: [
@@ -43,5 +47,19 @@ export const defaultLexical = lexicalEditor({
         ]
       },
     }),
+  ],
+})
+
+//lexical with all features
+export const defaultLexicalWithAllFeatures = lexicalEditor({
+  features: [
+    ParagraphFeature(),
+    UnderlineFeature(),
+    BoldFeature(),
+    ItalicFeature(),
+    HeadingFeature({ enabledHeadingSizes: ['h1', 'h2', 'h3', 'h4'] }),
+    FixedToolbarFeature(),
+    InlineToolbarFeature(),
+    PayloadAiPluginLexicalEditorFeature(),
   ],
 })

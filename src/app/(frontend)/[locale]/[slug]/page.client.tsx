@@ -7,9 +7,10 @@ const PageClient: React.FC = () => {
   const { setHeaderTheme } = useHeaderTheme()
 
   useEffect(() => {
-    setHeaderTheme('light')
+    // Default header theme for pages; heroes can override (e.g. HighImpactHero sets 'dark')
+    setHeaderTheme(null)
   }, [setHeaderTheme])
-  return <React.Fragment />
+  return null
 }
 
 export default PageClient

@@ -9,6 +9,9 @@ import { aiTranslationPlugin } from './ai-translation'
 
 import { Page } from '@/payload-types'
 import { getServerSideURL } from '@/utilities/getURL'
+import { Chatbot } from '@/globals/chatbot'
+import { payloadAiPlugin } from '@ai-stack/payloadcms'
+import { Pages } from '@/collections/Pages'
 
 const generateTitle: GenerateTitle<Page> = ({ doc }) => {
   return doc?.title ? `${doc.title} | Payload Website Template` : 'Payload Website Template'
@@ -21,6 +24,16 @@ const generateURL: GenerateURL<Page> = ({ doc }) => {
 }
 
 export const plugins: Plugin[] = [
+  payloadAiPlugin({
+    collections: {},
+    globals: {
+      [Chatbot.slug]: true,
+    },
+    debugging: false,
+    options: {
+      enabledLanguages: ['en-US', 'zh-SG', 'zh-CN', 'en'],
+    },
+  }),
   redirectsPlugin({
     collections: ['pages'],
     overrides: {
@@ -84,12 +97,19 @@ export const aiTranslationPluginInstance = process.env.OPENAI_API_KEY
         model: 'gpt-4o-mini',
       },
       collections: ['pages'], // Qué collections traducir
-      globals: ['header', 'footer'], // Qué globals traducir
-      // Opcional: especificar qué fields traducir por collection
+      globals: ['header', 'footer', 'chatbot'], // Qué globals traducir
+      // Opcional: especificar qué fields traducir por collection/global
       // Si no se especifica, traduce TODOS los campos localizados
+      // Soporta wildcards con * para arrays/blocks:
+      // Ejemplos:
+      //   'title' - campo simple
+      //   'hero.richText' - campo anidado en grupo
+      //   'layout.*.richText' - campo richText en TODOS los items del array layout
+      //   'hero.links.*.link.label' - campo label en cada link del array links
       fields: {
-        // pages: ['title', 'hero.richText'], // Solo estos fields
-        // Si no especificas 'pages' aquí, traduce TODOS los campos localizados
+        // pages: ['title', 'hero.richText', 'layout.*.richText'],
+        // header: ['navItems.*.link.label'],
+        // Si no especificas una collection aquí, traduce TODOS los campos localizados
       },
     })
   : undefined

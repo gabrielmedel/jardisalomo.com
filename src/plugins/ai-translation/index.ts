@@ -3,6 +3,9 @@ import type { AITranslationPluginConfig } from './types'
 import { TranslationService } from './server/translateService'
 import { createTranslateEndpoints } from './server/endpoints'
 
+// Re-export helpers para uso en configs
+export { translateFieldButton, withTranslateButtons, translatableLabelConfig } from './helpers'
+
 export const aiTranslationPlugin =
   (pluginConfig: AITranslationPluginConfig): Plugin =>
   (incomingConfig: Config): Config => {

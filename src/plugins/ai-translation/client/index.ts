@@ -1,2 +1,5 @@
 export { default as TranslatePageButton } from './TranslatePageButton'
 export { default as BulkTranslateAction } from './BulkTranslateAction'
+export { default as TranslateFieldUI } from './TranslateFieldUI'
+export { default as TranslatableLabel } from './TranslatableLabel'
+export { TranslateFieldButton, createTranslatableLabel } from './TranslateFieldButton'

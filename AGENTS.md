@@ -16,6 +16,12 @@ You are an expert Payload CMS developer. When working with Payload projects, fol
 - To validate typescript correctness after modifying code run `tsc --noEmit`
 - Generate import maps after creating or modifying components.
 
+### Admin UI Styling
+
+- **DO NOT use Tailwind CSS** for Payload admin components - Tailwind is for frontend only
+- Use custom CSS/SCSS with Payload's CSS variables and design tokens
+- See "Styling Components" section for detailed guidelines
+
 ## Project Structure
 
 ```
@@ -750,6 +756,10 @@ export const Posts: CollectionConfig = {
 
 ### Styling Components
 
+**⚠️ IMPORTANT: DO NOT use Tailwind CSS for Admin UI components**
+
+Tailwind CSS is configured for frontend/website purposes only and should NOT be used in Payload Admin Panel components. For admin UI styling, use custom CSS/SCSS with Payload's design tokens.
+
 ```tsx
 import './styles.scss'
 
@@ -776,6 +786,14 @@ export function MyComponent() {
   }
 }
 ```
+
+**Admin UI Styling Best Practices:**
+- ✅ Use CSS/SCSS files imported into your component
+- ✅ Use Payload's CSS variables for colors, spacing, and breakpoints
+- ✅ Use inline styles for simple, component-specific styling
+- ✅ Import Payload's SCSS mixins for responsive design
+- ❌ DO NOT use Tailwind CSS classes in admin components
+- ❌ DO NOT rely on Tailwind utilities in any Payload admin UI code
 
 ### Type Safety
 

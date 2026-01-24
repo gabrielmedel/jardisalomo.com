@@ -39,6 +39,15 @@ export const hero: Field = {
       required: true,
     },
     {
+      name: 'preTitle',
+      type: 'text',
+      localized: true,
+      label: 'Pre-título',
+      admin: {
+        condition: (_, { type } = {}) => type === 'highImpact',
+      },
+    },
+    {
       name: 'richText',
       type: 'richText',
       localized: true,

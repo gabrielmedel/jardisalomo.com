@@ -92,10 +92,12 @@ const config = {
         success: 'hsl(var(--success))',
         error: 'hsl(var(--error))',
         warning: 'hsl(var(--warning))',
+        olive: 'hsl(var(--olive))',
+        pastel: 'hsl(var(--pastel))',
       },
       fontFamily: {
-        mono: ['var(--font-geist-mono)'],
-        sans: ['var(--font-geist-sans)'],
+        sans: ['var(--font-roboto)', 'system-ui', 'sans-serif'],
+        serif: ['Gambetta', 'Georgia', 'serif'],
       },
       keyframes: {
         'accordion-down': {

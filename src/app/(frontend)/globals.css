@@ -1,3 +1,22 @@
+/* Gambetta Variable (closer to Figma installed TTF) */
+@font-face {
+  font-family: 'Gambetta';
+  src: url('/fonts/gambetta/Gambetta-Variable.woff2') format('woff2'),
+       url('/fonts/gambetta/Gambetta-Variable.woff') format('woff');
+  font-weight: 300 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Gambetta';
+  src: url('/fonts/gambetta/Gambetta-VariableItalic.woff2') format('woff2'),
+       url('/fonts/gambetta/Gambetta-VariableItalic.woff') format('woff');
+  font-weight: 300 700;
+  font-style: italic;
+  font-display: swap;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -14,33 +33,48 @@
   }
 
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* Fonts */
+    --font-sans: var(--font-roboto), system-ui, sans-serif;
+    --font-serif: 'Gambetta', Georgia, serif;
 
-    --card: 240 5% 96%;
-    --card-foreground: 222.2 84% 4.9%;
+    /* Spacing tokens */
+    --space-hero-text: 16px;
+    --space-hero-cta: 32px;
+    --optical-subtitle-indent: clamp(3px, 0.3vw, 8px);
+
+    /* Colors - Jardi Salomo palette */
+    --background: 0 0% 100%;
+    --foreground: 0 0% 0%;
+
+    --card: 37 50% 85%;
+    --card-foreground: 32 29% 92%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover-foreground: 0 0% 0%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    --primary: 65 36% 34%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    /* #FDEFD7 */
+    --secondary: 20.14, 67.14%, 41.76%;
+    --secondary-foreground: 0 0% 0%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 37 50% 85%;
+    --muted-foreground: 65 15% 51%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    /* #AC8D5B */
+    --accent: 37 32.8% 51.6%;
+    --accent-foreground: 0 0% 100%;
+
+    --olive: 65 15% 51%;
+    --pastel: 37 50% 85%;
 
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 240 6% 80%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --border: 37 30% 80%;
+    --input: 37 50% 85%;
+    --ring: 65 36% 34%;
 
     --radius: 0.2rem;
 
@@ -50,33 +84,37 @@
   }
 
   [data-theme='dark'] {
-    --background: 0 0% 0%;
-    --foreground: 210 40% 98%;
+    --background: 0 0% 5%;
+    --foreground: 32 29% 92%;
 
-    --card: 0 0% 4%;
-    --card-foreground: 210 40% 98%;
+    --card: 0 0% 10%;
+    --card-foreground: 32 29% 92%;
 
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 0 0% 8%;
+    --popover-foreground: 32 29% 92%;
 
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
+    --primary: 65 36% 44%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 37.89, 90.48%, 91.76%;
+    --secondary-foreground: 38 85% 92%;
 
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
+    --muted: 0 0% 15%;
+    --muted-foreground: 65 15% 61%;
 
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
+    /* Slightly darker accent for dark theme */
+    --accent: 37 32.8% 41.6%;
+    --accent-foreground: 0 0% 100%;
+
+    --olive: 65 15% 41%;
+    --pastel: 37 30% 25%;
 
     --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 0, 0%, 15%, 0.8;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
+    --border: 0 0% 20%;
+    --input: 0 0% 15%;
+    --ring: 65 36% 44%;
 
     --success: 196 100% 14%;
     --warning: 34 51% 25%;
@@ -89,7 +127,213 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground min-h-[100vh] flex flex-col;
+    @apply bg-background text-foreground min-h-[100vh] flex flex-col font-sans;
+  }
+  
+  /* Serif headings by default */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-serif);
+    letter-spacing: 0.05em;
+    font-weight: 700;
+  }
+}
+
+/* Rich text / Prose styles */
+@layer components {
+  /* Reusable typography helpers */
+  .gambetta-title {
+    @apply font-serif leading-tight tracking-[0.07em] subpixel-antialiased;
+    font-weight: 450;
+  }
+
+  .gambetta-title--hero {
+    @apply text-4xl md:text-5xl lg:text-6xl;
+    margin-bottom: var(--space-hero-text);
+  }
+
+  .gambetta-title--block {
+    /* Proportional to hero h1 (~0.75x) */
+    @apply text-[28px] md:text-[36px] lg:text-[45px];
+    margin-bottom: var(--space-hero-text);
+  }
+
+  .hero-title {
+    @apply gambetta-title gambetta-title--hero;
+  }
+
+  .block-title {
+    @apply gambetta-title gambetta-title--block;
+  }
+
+  .pretitle {
+    @apply uppercase text-sm md:text-base tracking-[0.3em] mb-3 text-accent font-medium subpixel-antialiased;
+  }
+
+  .pretitle--secondary {
+    @apply uppercase text-sm md:text-base tracking-[0.3em] mb-3 text-secondary font-light subpixel-antialiased;
+  }
+
+  .hero-pretitle {
+    padding-left: var(--optical-subtitle-indent);
+  }
+
+  /* Figma paragraph: Roboto Light 20px, line-height 133.2%, tracking 0 */
+  .body-paragraph {
+    @apply font-sans font-light text-base sm:text-lg md:text-[20px] leading-[1.332] tracking-normal;
+  }
+
+  .roboto-subtitle {
+    @apply body-paragraph;
+  }
+
+  .roboto-subtitle--hero {
+    @apply max-w-2xl;
+  }
+
+  /* Hero richtext wrapper (so you don't repeat `[&_h1]...` everywhere) */
+  .hero-richtext h1 {
+    @apply hero-title;
+  }
+
+  .hero-richtext h2 {
+    @apply block-title;
+  }
+
+  .hero-richtext p {
+    @apply roboto-subtitle roboto-subtitle--hero;
+  }
+
+  /* Block richtext wrapper */
+  .block-richtext h2 {
+    @apply block-title text-center mx-auto max-w-3xl;
+    font-family: var(--font-serif) !important;
+  }
+
+  .block-richtext p {
+    @apply roboto-subtitle roboto-subtitle--hero text-center;
+  }
+
+  /* Ensure any rich text node is centered in this block */
+  .block-richtext {
+    text-align: center;
+  }
+
+  .block-richtext * {
+    text-align: inherit;
+  }
+
+  /* Optical alignment: Gambetta title + Roboto subtitle */
+  .hero-richtext h1 + p,
+  .hero-richtext h2 + p,
+  .hero-richtext h3 + p {
+    padding-left: var(--optical-subtitle-indent);
+  }
+  
+  /* For centered blocks, no optical alignment needed */
+  .block-richtext h2,
+  .block-richtext h3,
+  .block-richtext p {
+    padding-left: 0 !important;
+  }
+
+  /* Two column richtext - always left aligned */
+  .two-column-richtext {
+    text-align: left;
+  }
+
+  .two-column-richtext h2 {
+    @apply block-title text-left;
+    max-width: none;
+    margin-left: 0;
+  }
+
+  .two-column-richtext h3,
+  .two-column-richtext h4 {
+    @apply text-left;
+  }
+
+  .two-column-richtext p {
+    @apply roboto-subtitle text-left;
+  }
+
+  .two-column-richtext * {
+    text-align: left;
+    padding-left: 0 !important;
+  }
+
+  .title-subtitle .gambetta-title + .roboto-subtitle {
+    padding-left: var(--optical-subtitle-indent);
+  }
+
+  .hero-richtext strong {
+    @apply font-medium;
+  }
+
+  .hero-richtext em {
+    @apply italic;
+  }
+
+  .hero-richtext u {
+    @apply underline;
+  }
+
+  .prose {
+    /* Paragraphs: Roboto light */
+    p {
+      font-family: var(--font-sans);
+      font-weight: 300;
+    }
+
+    /* Lists: Roboto light */
+    li {
+      font-family: var(--font-sans);
+      font-weight: 300;
+    }
+
+    /* Headings: Gambetta bold */
+    h1, h2, h3, h4, h5, h6 {
+      font-family: var(--font-serif);
+      font-weight: 700;
+      letter-spacing: 0.05em;
+    }
+
+    /* Strong/bold text */
+    strong, b {
+      font-weight: 700;
+    }
+  }
+
+  /* Link with underline style */
+  .link-underline {
+    @apply inline-flex items-center gap-2 font-sans font-normal text-base;
+    text-decoration: none;
+    position: relative;
+    transition: all 0.2s ease;
+
+    /* Underline appears only on hover */
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 0;
+      height: 1px;
+      background-color: currentColor;
+      transition: width 0.3s ease;
+    }
+
+    &:hover::after {
+      width: 100%;
+    }
+
+    svg {
+      flex-shrink: 0;
+      transition: transform 0.2s ease;
+    }
+
+    &:hover svg {
+      transform: translateX(2px);
+    }
   }
 }
 

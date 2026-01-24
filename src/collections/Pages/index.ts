@@ -3,9 +3,13 @@ import type { CollectionConfig } from 'payload'
 import { authenticated } from '../../access/authenticated'
 import { authenticatedOrPublished } from '../../access/authenticatedOrPublished'
 import { CallToAction } from '../../blocks/CallToAction/config'
+import { CarouselSlider } from '../../blocks/CarouselSlider/config'
+import { CenteredWithMedia } from '../../blocks/CenteredWithMedia/config'
 import { Content } from '../../blocks/Content/config'
+import { Features } from '../../blocks/Features/config'
 import { FormBlock } from '../../blocks/Form/config'
 import { MediaBlock } from '../../blocks/MediaBlock/config'
+import { TwoColumnContentMedia } from '../../blocks/TwoColumnContentMedia/config'
 import { hero } from '@/heros/config'
 import { slugField } from 'payload'
 import { populatePublishedAt } from '../../hooks/populatePublishedAt'
@@ -75,7 +79,16 @@ export const Pages: CollectionConfig<'pages'> = {
             {
               name: 'layout',
               type: 'blocks',
-              blocks: [CallToAction, Content, MediaBlock, FormBlock],
+              blocks: [
+                CallToAction,
+                CarouselSlider,
+                CenteredWithMedia,
+                Content,
+                Features,
+                MediaBlock,
+                FormBlock,
+                TwoColumnContentMedia,
+              ],
               required: true,
               admin: {
                 initCollapsed: true,

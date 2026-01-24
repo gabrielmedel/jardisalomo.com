@@ -40,19 +40,30 @@ export function createTranslateEndpoints(
           throw new APIError('Invalid JSON body', 400)
         }
 
-        const { collection, global, id, fromLocale, toLocale } = body
+        const { collection, global, id, fromLocale, toLocale, fields } = body
 
-        console.log('Translate document request:', { collection, global, id, fromLocale, toLocale })
+        console.log('Translate document request:', {
+          collection,
+          global,
+          id,
+          fromLocale,
+          toLocale,
+          fields,
+        })
 
-        if (!id || !fromLocale || !toLocale) {
+        if (!fromLocale || !toLocale) {
           throw new APIError(
-            `Missing required fields: id=${id}, fromLocale=${fromLocale}, toLocale=${toLocale}`,
+            `Missing required fields: fromLocale=${fromLocale}, toLocale=${toLocale}`,
             400,
           )
         }
 
         if (!collection && !global) {
           throw new APIError('Must specify collection or global', 400)
+        }
+
+        if (collection && !id) {
+          throw new APIError(`Missing required field: id=${id}`, 400)
         }
 
         try {
@@ -62,6 +73,7 @@ export function createTranslateEndpoints(
             id,
             fromLocale,
             toLocale,
+            fields, // Campos específicos a traducir (opcional)
           })
 
           return Response.json({ success: true })
@@ -102,7 +114,7 @@ export function createTranslateEndpoints(
           throw new APIError('Invalid JSON body', 400)
         }
 
-        const { collection, ids, fromLocale, toLocale } = body
+        const { collection, ids, fromLocale, toLocale, fields } = body
 
         if (!collection || !ids || !Array.isArray(ids) || !fromLocale || !toLocale) {
           throw new APIError('Invalid request', 400)
@@ -116,6 +128,7 @@ export function createTranslateEndpoints(
               id,
               fromLocale,
               toLocale,
+              fields,
             })
           }
 
