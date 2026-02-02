@@ -7,6 +7,18 @@
  */
 
 /**
+ * Field names that should be masked in console logs (case-insensitive).
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "LogToConsoleActionMaskField".
+ */
+export type LogToConsoleActionMaskField =
+  | {
+      field?: string | null;
+      id?: string | null;
+    }[]
+  | null;
+/**
  * Supported timezones in IANA format.
  *
  * This interface was referenced by `Config`'s JSON-Schema
@@ -70,10 +82,14 @@ export interface Config {
     pages: Page;
     media: Media;
     users: User;
+    dishes: Dish;
+    menus: Menu;
     'plugin-ai-instructions': PluginAiInstruction;
     redirects: Redirect;
     forms: Form;
     'form-submissions': FormSubmission;
+    'reservation-types': ReservationType;
+    reservations: Reservation;
     'payload-kv': PayloadKv;
     'payload-jobs': PayloadJob;
     'payload-folders': FolderInterface;
@@ -90,10 +106,14 @@ export interface Config {
     pages: PagesSelect<false> | PagesSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
+    dishes: DishesSelect<false> | DishesSelect<true>;
+    menus: MenusSelect<false> | MenusSelect<true>;
     'plugin-ai-instructions': PluginAiInstructionsSelect<false> | PluginAiInstructionsSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     forms: FormsSelect<false> | FormsSelect<true>;
     'form-submissions': FormSubmissionsSelect<false> | FormSubmissionsSelect<true>;
+    'reservation-types': ReservationTypesSelect<false> | ReservationTypesSelect<true>;
+    reservations: ReservationsSelect<false> | ReservationsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-jobs': PayloadJobsSelect<false> | PayloadJobsSelect<true>;
     'payload-folders': PayloadFoldersSelect<false> | PayloadFoldersSelect<true>;
@@ -202,6 +222,8 @@ export interface Page {
     | FeaturesBlock
     | MediaBlock
     | FormBlock
+    | MenuBlock
+    | MenuDisplayBlock
     | TwoColumnContentMediaBlock
   )[];
   meta?: {
@@ -530,7 +552,21 @@ export interface FeaturesBlock {
     | {
         icon: number | Media;
         heading: string;
-        description: string;
+        description: {
+          root: {
+            type: string;
+            children: {
+              type: any;
+              version: number;
+              [k: string]: unknown;
+            }[];
+            direction: ('ltr' | 'rtl') | null;
+            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+            indent: number;
+            version: number;
+          };
+          [k: string]: unknown;
+        };
         id?: string | null;
       }[]
     | null;
@@ -554,6 +590,10 @@ export interface MediaBlock {
  */
 export interface FormBlock {
   form: number | Form;
+  /**
+   * Color de fondo para la sección del formulario
+   */
+  backgroundColor: 'none' | 'pastel' | 'olive' | 'accent';
   enableIntro?: boolean | null;
   introContent?: {
     root: {
@@ -688,6 +728,9 @@ export interface Form {
             blockName?: string | null;
             blockType: 'textarea';
           }
+        | FormRowBlock
+        | FormStepperBlock
+        | FormReservationFieldBlock
       )[]
     | null;
   submitButtonLabel?: string | null;
@@ -745,8 +788,632 @@ export interface Form {
         id?: string | null;
       }[]
     | null;
+  /**
+   * Mensaje que se muestra cuando hay errores de validación en el formulario (campos obligatorios, formato incorrecto, etc.).
+   */
+  validationErrorMessage?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  /**
+   * Configure actions to execute when this form is submitted.
+   */
+  actions?:
+    | {
+        /**
+         * Type of action to execute.
+         */
+        type: 'logToConsole' | 'createReservation';
+        /**
+         * Enable or disable this action.
+         */
+        enabled?: boolean | null;
+        maskFields?: LogToConsoleActionMaskField;
+        /**
+         * Maximum length for field values in logs (longer values will be truncated).
+         */
+        maxValueLength?: number | null;
+        id?: string | null;
+      }[]
+    | null;
   updatedAt: string;
   createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "FormRowBlock".
+ */
+export interface FormRowBlock {
+  /**
+   * Añade columnas a esta fila. Los campos dentro de cada columna se mostrarán lado a lado.
+   */
+  columns?:
+    | {
+        width?: ('full' | 'half' | 'third' | 'quarter' | 'twoThirds' | 'threeQuarters') | null;
+        fields?:
+          | (
+              | {
+                  name: string;
+                  label?: string | null;
+                  width?: number | null;
+                  defaultValue?: string | null;
+                  required?: boolean | null;
+                  id?: string | null;
+                  blockName?: string | null;
+                  blockType: 'text';
+                }
+              | {
+                  name: string;
+                  label?: string | null;
+                  width?: number | null;
+                  defaultValue?: string | null;
+                  required?: boolean | null;
+                  id?: string | null;
+                  blockName?: string | null;
+                  blockType: 'textarea';
+                }
+              | {
+                  name: string;
+                  label?: string | null;
+                  width?: number | null;
+                  defaultValue?: string | null;
+                  placeholder?: string | null;
+                  options?:
+                    | {
+                        label: string;
+                        value: string;
+                        id?: string | null;
+                      }[]
+                    | null;
+                  required?: boolean | null;
+                  id?: string | null;
+                  blockName?: string | null;
+                  blockType: 'select';
+                }
+              | {
+                  name: string;
+                  label?: string | null;
+                  width?: number | null;
+                  required?: boolean | null;
+                  id?: string | null;
+                  blockName?: string | null;
+                  blockType: 'email';
+                }
+              | {
+                  name: string;
+                  label?: string | null;
+                  width?: number | null;
+                  required?: boolean | null;
+                  id?: string | null;
+                  blockName?: string | null;
+                  blockType: 'state';
+                }
+              | {
+                  name: string;
+                  label?: string | null;
+                  width?: number | null;
+                  required?: boolean | null;
+                  id?: string | null;
+                  blockName?: string | null;
+                  blockType: 'country';
+                }
+              | {
+                  name: string;
+                  label?: string | null;
+                  width?: number | null;
+                  required?: boolean | null;
+                  defaultValue?: boolean | null;
+                  id?: string | null;
+                  blockName?: string | null;
+                  blockType: 'checkbox';
+                }
+              | {
+                  name: string;
+                  label?: string | null;
+                  width?: number | null;
+                  defaultValue?: number | null;
+                  required?: boolean | null;
+                  id?: string | null;
+                  blockName?: string | null;
+                  blockType: 'number';
+                }
+              | {
+                  message?: {
+                    root: {
+                      type: string;
+                      children: {
+                        type: any;
+                        version: number;
+                        [k: string]: unknown;
+                      }[];
+                      direction: ('ltr' | 'rtl') | null;
+                      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                      indent: number;
+                      version: number;
+                    };
+                    [k: string]: unknown;
+                  } | null;
+                  id?: string | null;
+                  blockName?: string | null;
+                  blockType: 'message';
+                }
+              | FormReservationFieldBlock
+            )[]
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'row';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "FormReservationFieldBlock".
+ */
+export interface FormReservationFieldBlock {
+  /**
+   * Tipo de reserva a utilizar para este campo
+   */
+  reservationType: number | ReservationType;
+  /**
+   * Número predeterminado de personas
+   */
+  defaultPeople?: number | null;
+  /**
+   * Número máximo de personas permitido
+   */
+  maxPeople?: number | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'reservationField';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "reservation-types".
+ */
+export interface ReservationType {
+  id: number;
+  /**
+   * Nombre descriptivo del tipo de reserva (ej: Terraza, Interior, Evento Privado)
+   */
+  name: string;
+  /**
+   * Identificador único para este tipo de reserva
+   */
+  slug: string;
+  /**
+   * Heredar configuración de otro tipo de reserva (solo 1 nivel)
+   */
+  inheritsFrom?: (number | null) | ReservationType;
+  /**
+   * Días de la semana disponibles para este tipo de reserva
+   */
+  availableDays?: ('0' | '1' | '2' | '3' | '4' | '5' | '6')[] | null;
+  /**
+   * Rango de fechas disponibles (opcional)
+   */
+  dateRange?: {
+    /**
+     * Fecha de inicio de disponibilidad
+     */
+    startDate?: string | null;
+    /**
+     * Fecha de fin de disponibilidad
+     */
+    endDate?: string | null;
+  };
+  /**
+   * Franjas horarias y capacidad para cada franja
+   */
+  timeSlots?:
+    | {
+        /**
+         * Hora de inicio (formato HH:mm)
+         */
+        startTime: string;
+        /**
+         * Hora de fin (formato HH:mm)
+         */
+        endTime: string;
+        /**
+         * Capacidad máxima de personas para esta franja
+         */
+        maxCapacity: number;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "FormStepperBlock".
+ */
+export interface FormStepperBlock {
+  /**
+   * Configura los pasos del formulario. El usuario navegará entre pasos antes de enviar.
+   */
+  steps?:
+    | {
+        title: string;
+        /**
+         * Texto descriptivo que aparece debajo del título del paso.
+         */
+        description?: string | null;
+        fields?:
+          | (
+              | {
+                  name: string;
+                  label?: string | null;
+                  width?: number | null;
+                  defaultValue?: string | null;
+                  required?: boolean | null;
+                  id?: string | null;
+                  blockName?: string | null;
+                  blockType: 'text';
+                }
+              | {
+                  name: string;
+                  label?: string | null;
+                  width?: number | null;
+                  defaultValue?: string | null;
+                  required?: boolean | null;
+                  id?: string | null;
+                  blockName?: string | null;
+                  blockType: 'textarea';
+                }
+              | {
+                  name: string;
+                  label?: string | null;
+                  width?: number | null;
+                  defaultValue?: string | null;
+                  placeholder?: string | null;
+                  options?:
+                    | {
+                        label: string;
+                        value: string;
+                        id?: string | null;
+                      }[]
+                    | null;
+                  required?: boolean | null;
+                  id?: string | null;
+                  blockName?: string | null;
+                  blockType: 'select';
+                }
+              | {
+                  name: string;
+                  label?: string | null;
+                  width?: number | null;
+                  required?: boolean | null;
+                  id?: string | null;
+                  blockName?: string | null;
+                  blockType: 'email';
+                }
+              | {
+                  name: string;
+                  label?: string | null;
+                  width?: number | null;
+                  required?: boolean | null;
+                  id?: string | null;
+                  blockName?: string | null;
+                  blockType: 'state';
+                }
+              | {
+                  name: string;
+                  label?: string | null;
+                  width?: number | null;
+                  required?: boolean | null;
+                  id?: string | null;
+                  blockName?: string | null;
+                  blockType: 'country';
+                }
+              | {
+                  name: string;
+                  label?: string | null;
+                  width?: number | null;
+                  required?: boolean | null;
+                  defaultValue?: boolean | null;
+                  id?: string | null;
+                  blockName?: string | null;
+                  blockType: 'checkbox';
+                }
+              | {
+                  name: string;
+                  label?: string | null;
+                  width?: number | null;
+                  defaultValue?: number | null;
+                  required?: boolean | null;
+                  id?: string | null;
+                  blockName?: string | null;
+                  blockType: 'number';
+                }
+              | {
+                  message?: {
+                    root: {
+                      type: string;
+                      children: {
+                        type: any;
+                        version: number;
+                        [k: string]: unknown;
+                      }[];
+                      direction: ('ltr' | 'rtl') | null;
+                      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                      indent: number;
+                      version: number;
+                    };
+                    [k: string]: unknown;
+                  } | null;
+                  id?: string | null;
+                  blockName?: string | null;
+                  blockType: 'message';
+                }
+              | FormReservationFieldBlock
+              | FormRowBlock
+            )[]
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  previousButtonLabel?: string | null;
+  nextButtonLabel?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'stepper';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "MenuBlock".
+ */
+export interface MenuBlock {
+  /**
+   * Selecciona qué carta mostrar
+   */
+  menu: number | Menu;
+  /**
+   * Color de fondo para toda la sección del bloque
+   */
+  sectionBackgroundColor: 'none' | 'pastel' | 'olive' | 'accent';
+  /**
+   * Texto pequeño sobre el título principal
+   */
+  preTitle?: string | null;
+  /**
+   * Título principal (sobrescribe el nombre de la carta si se proporciona)
+   */
+  title?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  /**
+   * Descripción adicional (complementa la descripción de la carta)
+   */
+  description?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  /**
+   * Mostrar imágenes de los platos si están disponibles
+   */
+  showImages?: boolean | null;
+  /**
+   * Mostrar información de alérgenos de cada plato
+   */
+  showAllergens?: boolean | null;
+  /**
+   * Agrupar platos por categoría (Entrantes, Principales, etc.) o mostrar lista única
+   */
+  groupByCategory?: boolean | null;
+  /**
+   * Mostrar solo los platos marcados como destacados
+   */
+  onlyFeatured?: boolean | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'menu';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "menus".
+ */
+export interface Menu {
+  id: number;
+  /**
+   * Ej: Carta Principal, Carta de Vinos, Carta de Postres
+   */
+  name: string;
+  /**
+   * Identificador único para la carta
+   */
+  slug: string;
+  /**
+   * Descripción de la carta
+   */
+  description?: string | null;
+  /**
+   * Selecciona los platos que forman parte de esta carta
+   */
+  dishes: (number | Dish)[];
+  /**
+   * Si la carta está activa y visible
+   */
+  active?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "dishes".
+ */
+export interface Dish {
+  id: number;
+  name: string;
+  /**
+   * Descripción del plato
+   */
+  description?: string | null;
+  /**
+   * Ej: 16,50€
+   */
+  price: string;
+  category: 'starters' | 'mains' | 'desserts' | 'drinks';
+  /**
+   * Imagen opcional del plato
+   */
+  image?: (number | null) | Media;
+  /**
+   * Marcar como recomendación del chef
+   */
+  featured?: boolean | null;
+  /**
+   * Lista de alérgenos presentes en el plato
+   */
+  allergens?:
+    | {
+        /**
+         * Ej: Gluten, Lácteos, Frutos secos
+         */
+        allergen: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Indica si el plato está disponible actualmente
+   */
+  available?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "MenuDisplayBlock".
+ */
+export interface MenuDisplayBlock {
+  /**
+   * Color de fondo para toda la sección del bloque
+   */
+  sectionBackgroundColor: 'none' | 'pastel' | 'olive' | 'accent';
+  /**
+   * Imagen que se mostrará en la parte superior del bloque
+   */
+  backgroundImage: number | Media;
+  /**
+   * Texto pequeño sobre el título principal
+   */
+  preTitle?: string | null;
+  /**
+   * Título principal del menú
+   */
+  title?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  /**
+   * Añade información como fechas y horarios con iconos
+   */
+  infoItems?:
+    | {
+        type: 'date' | 'time';
+        /**
+         * Texto a mostrar junto al icono
+         */
+        label: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Añade los platos o secciones del menú con descripciones
+   */
+  menuItems?:
+    | {
+        /**
+         * Nombre del plato, descripción y otros detalles usando formato de texto enriquecido
+         */
+        content: {
+          root: {
+            type: string;
+            children: {
+              type: any;
+              version: number;
+              [k: string]: unknown;
+            }[];
+            direction: ('ltr' | 'rtl') | null;
+            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+            indent: number;
+            version: number;
+          };
+          [k: string]: unknown;
+        };
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Añade categorías de precios (Adultos, Infantil, etc.)
+   */
+  pricingItems?:
+    | {
+        /**
+         * Ej: Adultos, Infantil
+         */
+        label: string;
+        /**
+         * Ej: 16,50€
+         */
+        price: string;
+        /**
+         * Ej: / persona
+         */
+        perPriceLabel: string;
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'menuDisplay';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -761,6 +1428,10 @@ export interface TwoColumnContentMediaBlock {
    * Usar una sola imagen o dos imágenes con efecto de superposición
    */
   mediaLayout: 'single' | 'dual';
+  /**
+   * Color de fondo para el bloque de contenido
+   */
+  backgroundColor: 'none' | 'pastel' | 'olive' | 'accent';
   preTitle?: string | null;
   richText?: {
     root: {
@@ -804,6 +1475,22 @@ export interface TwoColumnContentMediaBlock {
    * Segunda imagen que se superpone con la principal
    */
   mediaSecondary?: (number | null) | Media;
+  /**
+   * Rectángulo decorativo detrás de la imagen
+   */
+  mediaBackgroundColor?: ('none' | 'pastel' | 'olive' | 'accent') | null;
+  /**
+   * Ancho del rectángulo en % del viewport (20-60)
+   */
+  rectangleWidth?: number | null;
+  /**
+   * Offset vertical del rectángulo en % (-20 a 40, negativo sube, positivo baja)
+   */
+  rectangleOffsetTop?: number | null;
+  /**
+   * Altura del rectángulo en % del contenedor (60-140)
+   */
+  rectangleHeight?: number | null;
   id?: string | null;
   blockName?: string | null;
   blockType: 'twoColumnContentMedia';
@@ -815,6 +1502,7 @@ export interface TwoColumnContentMediaBlock {
 export interface User {
   id: number;
   name?: string | null;
+  roles: ('admin' | 'user')[];
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -948,6 +1636,55 @@ export interface FormSubmission {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "reservations".
+ */
+export interface Reservation {
+  id: number;
+  /**
+   * Tipo de reserva
+   */
+  reservationType: number | ReservationType;
+  /**
+   * Fecha de la reserva
+   */
+  date: string;
+  /**
+   * Hora de inicio (formato HH:mm)
+   */
+  startTime: string;
+  /**
+   * Hora de fin (formato HH:mm)
+   */
+  endTime: string;
+  /**
+   * Número total de personas
+   */
+  numberOfPeople: number;
+  /**
+   * Nombre completo del cliente
+   */
+  guestName: string;
+  /**
+   * Email de contacto
+   */
+  email: string;
+  /**
+   * Teléfono de contacto
+   */
+  phone: string;
+  /**
+   * Estado de la reserva (solo confirmadas cuentan para el aforo)
+   */
+  status: 'pending' | 'confirmed' | 'cancelled';
+  /**
+   * Referencia al formulario de origen
+   */
+  formSubmission?: (number | null) | FormSubmission;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -1075,6 +1812,14 @@ export interface PayloadLockedDocument {
         value: number | User;
       } | null)
     | ({
+        relationTo: 'dishes';
+        value: number | Dish;
+      } | null)
+    | ({
+        relationTo: 'menus';
+        value: number | Menu;
+      } | null)
+    | ({
         relationTo: 'plugin-ai-instructions';
         value: number | PluginAiInstruction;
       } | null)
@@ -1089,6 +1834,14 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'form-submissions';
         value: number | FormSubmission;
+      } | null)
+    | ({
+        relationTo: 'reservation-types';
+        value: number | ReservationType;
+      } | null)
+    | ({
+        relationTo: 'reservations';
+        value: number | Reservation;
       } | null)
     | ({
         relationTo: 'payload-folders';
@@ -1175,6 +1928,8 @@ export interface PagesSelect<T extends boolean = true> {
         features?: T | FeaturesBlockSelect<T>;
         mediaBlock?: T | MediaBlockSelect<T>;
         formBlock?: T | FormBlockSelect<T>;
+        menu?: T | MenuBlockSelect<T>;
+        menuDisplay?: T | MenuDisplayBlockSelect<T>;
         twoColumnContentMedia?: T | TwoColumnContentMediaBlockSelect<T>;
       };
   meta?:
@@ -1326,8 +2081,59 @@ export interface MediaBlockSelect<T extends boolean = true> {
  */
 export interface FormBlockSelect<T extends boolean = true> {
   form?: T;
+  backgroundColor?: T;
   enableIntro?: T;
   introContent?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "MenuBlock_select".
+ */
+export interface MenuBlockSelect<T extends boolean = true> {
+  menu?: T;
+  sectionBackgroundColor?: T;
+  preTitle?: T;
+  title?: T;
+  description?: T;
+  showImages?: T;
+  showAllergens?: T;
+  groupByCategory?: T;
+  onlyFeatured?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "MenuDisplayBlock_select".
+ */
+export interface MenuDisplayBlockSelect<T extends boolean = true> {
+  sectionBackgroundColor?: T;
+  backgroundImage?: T;
+  preTitle?: T;
+  title?: T;
+  infoItems?:
+    | T
+    | {
+        type?: T;
+        label?: T;
+        id?: T;
+      };
+  menuItems?:
+    | T
+    | {
+        content?: T;
+        id?: T;
+      };
+  pricingItems?:
+    | T
+    | {
+        label?: T;
+        price?: T;
+        perPriceLabel?: T;
+        id?: T;
+      };
   id?: T;
   blockName?: T;
 }
@@ -1338,6 +2144,7 @@ export interface FormBlockSelect<T extends boolean = true> {
 export interface TwoColumnContentMediaBlockSelect<T extends boolean = true> {
   contentPosition?: T;
   mediaLayout?: T;
+  backgroundColor?: T;
   preTitle?: T;
   richText?: T;
   links?:
@@ -1357,6 +2164,10 @@ export interface TwoColumnContentMediaBlockSelect<T extends boolean = true> {
       };
   mediaPrimary?: T;
   mediaSecondary?: T;
+  mediaBackgroundColor?: T;
+  rectangleWidth?: T;
+  rectangleOffsetTop?: T;
+  rectangleHeight?: T;
   id?: T;
   blockName?: T;
 }
@@ -1460,6 +2271,7 @@ export interface MediaSelect<T extends boolean = true> {
  */
 export interface UsersSelect<T extends boolean = true> {
   name?: T;
+  roles?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;
@@ -1476,6 +2288,40 @@ export interface UsersSelect<T extends boolean = true> {
         createdAt?: T;
         expiresAt?: T;
       };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "dishes_select".
+ */
+export interface DishesSelect<T extends boolean = true> {
+  name?: T;
+  description?: T;
+  price?: T;
+  category?: T;
+  image?: T;
+  featured?: T;
+  allergens?:
+    | T
+    | {
+        allergen?: T;
+        id?: T;
+      };
+  available?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "menus_select".
+ */
+export interface MenusSelect<T extends boolean = true> {
+  name?: T;
+  slug?: T;
+  description?: T;
+  dishes?: T;
+  active?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1667,6 +2513,9 @@ export interface FormsSelect<T extends boolean = true> {
               id?: T;
               blockName?: T;
             };
+        row?: T | FormRowBlockSelect<T>;
+        stepper?: T | FormStepperBlockSelect<T>;
+        reservationField?: T | FormReservationFieldBlockSelect<T>;
       };
   submitButtonLabel?: T;
   confirmationType?: T;
@@ -1688,8 +2537,279 @@ export interface FormsSelect<T extends boolean = true> {
         message?: T;
         id?: T;
       };
+  validationErrorMessage?: T;
+  actions?:
+    | T
+    | {
+        type?: T;
+        enabled?: T;
+        maskFields?: T | LogToConsoleActionMaskFieldSelect<T>;
+        maxValueLength?: T;
+        id?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "FormRowBlock_select".
+ */
+export interface FormRowBlockSelect<T extends boolean = true> {
+  columns?:
+    | T
+    | {
+        width?: T;
+        fields?:
+          | T
+          | {
+              text?:
+                | T
+                | {
+                    name?: T;
+                    label?: T;
+                    width?: T;
+                    defaultValue?: T;
+                    required?: T;
+                    id?: T;
+                    blockName?: T;
+                  };
+              textarea?:
+                | T
+                | {
+                    name?: T;
+                    label?: T;
+                    width?: T;
+                    defaultValue?: T;
+                    required?: T;
+                    id?: T;
+                    blockName?: T;
+                  };
+              select?:
+                | T
+                | {
+                    name?: T;
+                    label?: T;
+                    width?: T;
+                    defaultValue?: T;
+                    placeholder?: T;
+                    options?:
+                      | T
+                      | {
+                          label?: T;
+                          value?: T;
+                          id?: T;
+                        };
+                    required?: T;
+                    id?: T;
+                    blockName?: T;
+                  };
+              email?:
+                | T
+                | {
+                    name?: T;
+                    label?: T;
+                    width?: T;
+                    required?: T;
+                    id?: T;
+                    blockName?: T;
+                  };
+              state?:
+                | T
+                | {
+                    name?: T;
+                    label?: T;
+                    width?: T;
+                    required?: T;
+                    id?: T;
+                    blockName?: T;
+                  };
+              country?:
+                | T
+                | {
+                    name?: T;
+                    label?: T;
+                    width?: T;
+                    required?: T;
+                    id?: T;
+                    blockName?: T;
+                  };
+              checkbox?:
+                | T
+                | {
+                    name?: T;
+                    label?: T;
+                    width?: T;
+                    required?: T;
+                    defaultValue?: T;
+                    id?: T;
+                    blockName?: T;
+                  };
+              number?:
+                | T
+                | {
+                    name?: T;
+                    label?: T;
+                    width?: T;
+                    defaultValue?: T;
+                    required?: T;
+                    id?: T;
+                    blockName?: T;
+                  };
+              message?:
+                | T
+                | {
+                    message?: T;
+                    id?: T;
+                    blockName?: T;
+                  };
+              reservationField?: T | FormReservationFieldBlockSelect<T>;
+            };
+        id?: T;
+      };
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "FormReservationFieldBlock_select".
+ */
+export interface FormReservationFieldBlockSelect<T extends boolean = true> {
+  reservationType?: T;
+  defaultPeople?: T;
+  maxPeople?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "FormStepperBlock_select".
+ */
+export interface FormStepperBlockSelect<T extends boolean = true> {
+  steps?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        fields?:
+          | T
+          | {
+              text?:
+                | T
+                | {
+                    name?: T;
+                    label?: T;
+                    width?: T;
+                    defaultValue?: T;
+                    required?: T;
+                    id?: T;
+                    blockName?: T;
+                  };
+              textarea?:
+                | T
+                | {
+                    name?: T;
+                    label?: T;
+                    width?: T;
+                    defaultValue?: T;
+                    required?: T;
+                    id?: T;
+                    blockName?: T;
+                  };
+              select?:
+                | T
+                | {
+                    name?: T;
+                    label?: T;
+                    width?: T;
+                    defaultValue?: T;
+                    placeholder?: T;
+                    options?:
+                      | T
+                      | {
+                          label?: T;
+                          value?: T;
+                          id?: T;
+                        };
+                    required?: T;
+                    id?: T;
+                    blockName?: T;
+                  };
+              email?:
+                | T
+                | {
+                    name?: T;
+                    label?: T;
+                    width?: T;
+                    required?: T;
+                    id?: T;
+                    blockName?: T;
+                  };
+              state?:
+                | T
+                | {
+                    name?: T;
+                    label?: T;
+                    width?: T;
+                    required?: T;
+                    id?: T;
+                    blockName?: T;
+                  };
+              country?:
+                | T
+                | {
+                    name?: T;
+                    label?: T;
+                    width?: T;
+                    required?: T;
+                    id?: T;
+                    blockName?: T;
+                  };
+              checkbox?:
+                | T
+                | {
+                    name?: T;
+                    label?: T;
+                    width?: T;
+                    required?: T;
+                    defaultValue?: T;
+                    id?: T;
+                    blockName?: T;
+                  };
+              number?:
+                | T
+                | {
+                    name?: T;
+                    label?: T;
+                    width?: T;
+                    defaultValue?: T;
+                    required?: T;
+                    id?: T;
+                    blockName?: T;
+                  };
+              message?:
+                | T
+                | {
+                    message?: T;
+                    id?: T;
+                    blockName?: T;
+                  };
+              reservationField?: T | FormReservationFieldBlockSelect<T>;
+              row?: T | FormRowBlockSelect<T>;
+            };
+        id?: T;
+      };
+  previousButtonLabel?: T;
+  nextButtonLabel?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "LogToConsoleActionMaskField_select".
+ */
+export interface LogToConsoleActionMaskFieldSelect<T extends boolean = true> {
+  field?: T;
+  id?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1704,6 +2824,50 @@ export interface FormSubmissionsSelect<T extends boolean = true> {
         value?: T;
         id?: T;
       };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "reservation-types_select".
+ */
+export interface ReservationTypesSelect<T extends boolean = true> {
+  name?: T;
+  slug?: T;
+  inheritsFrom?: T;
+  availableDays?: T;
+  dateRange?:
+    | T
+    | {
+        startDate?: T;
+        endDate?: T;
+      };
+  timeSlots?:
+    | T
+    | {
+        startTime?: T;
+        endTime?: T;
+        maxCapacity?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "reservations_select".
+ */
+export interface ReservationsSelect<T extends boolean = true> {
+  reservationType?: T;
+  date?: T;
+  startTime?: T;
+  endTime?: T;
+  numberOfPeople?: T;
+  guestName?: T;
+  email?: T;
+  phone?: T;
+  status?: T;
+  formSubmission?: T;
   updatedAt?: T;
   createdAt?: T;
 }

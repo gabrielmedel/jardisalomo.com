@@ -17,11 +17,13 @@ export const Textarea: React.FC<
 > = ({ name, defaultValue, errors, label, register, required, rows = 3, width }) => {
   return (
     <Width width={width}>
-      <Label htmlFor={name}>
+      <Label
+        htmlFor={name}
+        className="block mb-2 text-sm font-sans font-normal text-primary tracking-normal"
+      >
         {label}
-
         {required && (
-          <span className="required">
+          <span className="text-accent ml-1">
             * <span className="sr-only">(required)</span>
           </span>
         )}
@@ -31,6 +33,7 @@ export const Textarea: React.FC<
         defaultValue={defaultValue}
         id={name}
         rows={rows}
+        className="w-full px-4 py-3 bg-white border-2 border-accent/30 rounded-sm text-base font-sans font-light text-primary placeholder:text-primary/40 focus:border-primary focus:ring-0 transition-colors resize-none"
         {...register(name, { required: required })}
       />
 

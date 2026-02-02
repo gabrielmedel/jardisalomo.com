@@ -78,7 +78,7 @@ export const HeaderNav: React.FC<{
   } as const
 
   const darkHoverClass =
-    orientation === 'column' ? 'text-white hover:text-[#F6E7D9]' : 'text-white hover:text-primary'
+    orientation === 'column' ? 'text-white hover:text-[#F6E7D9]' : 'text-white hover:text-white/80'
 
   return (
     <motion.nav

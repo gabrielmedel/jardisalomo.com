@@ -9,6 +9,8 @@ import { Content } from '../../blocks/Content/config'
 import { Features } from '../../blocks/Features/config'
 import { FormBlock } from '../../blocks/Form/config'
 import { MediaBlock } from '../../blocks/MediaBlock/config'
+import { Menu } from '../../blocks/Menu/config'
+import { MenuDisplay } from '../../blocks/MenuDisplay/config'
 import { TwoColumnContentMedia } from '../../blocks/TwoColumnContentMedia/config'
 import { hero } from '@/heros/config'
 import { slugField } from 'payload'
@@ -87,6 +89,8 @@ export const Pages: CollectionConfig<'pages'> = {
                 Features,
                 MediaBlock,
                 FormBlock,
+                Menu,
+                MenuDisplay,
                 TwoColumnContentMedia,
               ],
               required: true,

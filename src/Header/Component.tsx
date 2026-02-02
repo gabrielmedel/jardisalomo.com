@@ -7,7 +7,7 @@ import { getRequestLocale } from '@/utilities/getRequestLocale'
 
 export async function Header() {
   const locale = await getRequestLocale()
-  const headerData: Header = await getCachedGlobal('header', 1, locale)()
+  const headerData: Header = await getCachedGlobal('header', 2, locale)()
 
   return <HeaderClient data={headerData} locale={locale} />
 }

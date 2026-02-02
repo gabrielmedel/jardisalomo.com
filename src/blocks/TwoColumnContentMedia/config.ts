@@ -41,6 +41,21 @@ export const TwoColumnContentMedia: Block = {
       },
     },
     {
+      name: 'backgroundColor',
+      type: 'select',
+      defaultValue: 'none',
+      options: [
+        { label: 'Sin fondo', value: 'none' },
+        { label: 'Pastel (beige claro)', value: 'pastel' },
+        { label: 'Olive (verde oliva)', value: 'olive' },
+        { label: 'Accent (marrón/tan)', value: 'accent' },
+      ],
+      required: true,
+      admin: {
+        description: 'Color de fondo para el bloque de contenido',
+      },
+    },
+    {
       name: 'preTitle',
       type: 'text',
       localized: true,
@@ -85,6 +100,53 @@ export const TwoColumnContentMedia: Block = {
       admin: {
         condition: (data, siblingData) => siblingData?.mediaLayout === 'dual',
         description: 'Segunda imagen que se superpone con la principal',
+      },
+    },
+    {
+      name: 'mediaBackgroundColor',
+      type: 'select',
+      defaultValue: 'none',
+      options: [
+        { label: 'Sin rectángulo', value: 'none' },
+        { label: 'Pastel (beige claro)', value: 'pastel' },
+        { label: 'Olive (verde oliva)', value: 'olive' },
+        { label: 'Accent (marrón/tan)', value: 'accent' },
+      ],
+      admin: {
+        description: 'Rectángulo decorativo detrás de la imagen',
+      },
+    },
+    {
+      name: 'rectangleWidth',
+      type: 'number',
+      defaultValue: 30,
+      min: 20,
+      max: 60,
+      admin: {
+        condition: (data, siblingData) => siblingData?.mediaBackgroundColor !== 'none',
+        description: 'Ancho del rectángulo en % del viewport (20-60)',
+      },
+    },
+    {
+      name: 'rectangleOffsetTop',
+      type: 'number',
+      defaultValue: 0,
+      min: -20,
+      max: 40,
+      admin: {
+        condition: (data, siblingData) => siblingData?.mediaBackgroundColor !== 'none',
+        description: 'Offset vertical del rectángulo en % (-20 a 40, negativo sube, positivo baja)',
+      },
+    },
+    {
+      name: 'rectangleHeight',
+      type: 'number',
+      defaultValue: 100,
+      min: 60,
+      max: 140,
+      admin: {
+        condition: (data, siblingData) => siblingData?.mediaBackgroundColor !== 'none',
+        description: 'Altura del rectángulo en % del contenedor (60-140)',
       },
     },
   ],

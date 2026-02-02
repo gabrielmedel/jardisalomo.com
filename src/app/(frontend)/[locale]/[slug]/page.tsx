@@ -15,14 +15,15 @@ import { isSupportedLocale, DEFAULT_LOCALE, SUPPORTED_LOCALES } from '@/utilitie
 
 export async function generateStaticParams() {
   const payload = await getPayload({ config: configPromise })
-  
+
   const params: { locale: string; slug: string }[] = []
-  
+
   for (const locale of SUPPORTED_LOCALES) {
     const pages = await payload.find({
       collection: 'pages',
       draft: false,
       limit: 1000,
+      depth: 0,
       overrideAccess: false,
       pagination: false,
       locale: locale as any,
@@ -51,13 +52,13 @@ type Args = {
 export default async function Page({ params: paramsPromise }: Args) {
   const { isEnabled: draft } = await draftMode()
   const { locale: localeParam, slug = 'inici' } = await paramsPromise
-  
+
   const locale = isSupportedLocale(localeParam) ? localeParam : DEFAULT_LOCALE
-  
+
   // Decode to support slugs with special characters
   const decodedSlug = decodeURIComponent(slug)
   const url = `/${locale}/${decodedSlug}`
-  
+
   const page: RequiredDataFromCollectionSlug<'pages'> | null = await queryPageBySlug({
     slug: decodedSlug,
     locale,
@@ -71,7 +72,7 @@ export default async function Page({ params: paramsPromise }: Args) {
   const hasHero = hero && hero.type && hero.type !== 'none'
 
   return (
-    <article className={hasHero ? 'pb-24' : 'pt-24 pb-24'}>
+    <article className={hasHero ? '' : 'pt-24'}>
       <PageClient />
       {/* Allows redirects for valid pages too */}
       <PayloadRedirects disableNotFound url={url} />
@@ -87,10 +88,10 @@ export default async function Page({ params: paramsPromise }: Args) {
 export async function generateMetadata({ params: paramsPromise }: Args): Promise<Metadata> {
   const { locale: localeParam, slug = 'inici' } = await paramsPromise
   const locale = isSupportedLocale(localeParam) ? localeParam : DEFAULT_LOCALE
-  
+
   // Decode to support slugs with special characters
   const decodedSlug = decodeURIComponent(slug)
-  
+
   const page = await queryPageBySlug({
     slug: decodedSlug,
     locale,
@@ -108,7 +109,7 @@ const queryPageBySlug = cache(async ({ slug, locale }: { slug: string; locale: s
     collection: 'pages',
     draft,
     limit: 1,
-    depth: 2,
+    depth: 1,
     pagination: false,
     overrideAccess: draft,
     locale: locale as 'all' | 'ca' | 'en' | 'es',

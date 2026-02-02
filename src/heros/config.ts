@@ -44,7 +44,7 @@ export const hero: Field = {
       localized: true,
       label: 'Pre-título',
       admin: {
-        condition: (_, { type } = {}) => type === 'highImpact',
+        condition: (_, { type } = {}) => ['highImpact', 'mediumImpact'].includes(type),
       },
     },
     {

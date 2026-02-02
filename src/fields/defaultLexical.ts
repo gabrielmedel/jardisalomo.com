@@ -10,6 +10,8 @@ import {
   InlineToolbarFeature,
   FixedToolbarFeature,
   HeadingFeature,
+  UnorderedListFeature,
+  OrderedListFeature,
 } from '@payloadcms/richtext-lexical'
 import { PayloadAiPluginLexicalEditorFeature } from '@ai-stack/payloadcms'
 
@@ -19,6 +21,8 @@ export const defaultLexical = lexicalEditor({
     UnderlineFeature(),
     BoldFeature(),
     ItalicFeature(),
+    UnorderedListFeature(),
+    OrderedListFeature(),
     LinkFeature({
       enabledCollections: ['pages'],
       fields: ({ defaultFields }) => {
@@ -57,6 +61,8 @@ export const defaultLexicalWithAllFeatures = lexicalEditor({
     UnderlineFeature(),
     BoldFeature(),
     ItalicFeature(),
+    UnorderedListFeature(),
+    OrderedListFeature(),
     HeadingFeature({ enabledHeadingSizes: ['h1', 'h2', 'h3', 'h4'] }),
     FixedToolbarFeature(),
     InlineToolbarFeature(),

@@ -9,6 +9,8 @@ import { ContentBlock } from '@/blocks/Content/Component'
 import { FeaturesBlock } from '@/blocks/Features/Component'
 import { FormBlock } from '@/blocks/Form/Component'
 import { MediaBlock } from '@/blocks/MediaBlock/Component'
+import { MenuBlock } from '@/blocks/Menu/Component'
+import { MenuDisplayBlock } from '@/blocks/MenuDisplay/Component'
 import { TwoColumnContentMediaBlock } from '@/blocks/TwoColumnContentMedia/Component'
 
 const blockComponents = {
@@ -19,6 +21,8 @@ const blockComponents = {
   features: FeaturesBlock,
   formBlock: FormBlock,
   mediaBlock: MediaBlock,
+  menu: MenuBlock,
+  menuDisplay: MenuDisplayBlock,
   twoColumnContentMedia: TwoColumnContentMediaBlock,
 }
 
@@ -40,8 +44,9 @@ export const RenderBlocks: React.FC<{
             const Block = blockComponents[blockType]
 
             if (Block) {
+              const isLastBlock = index === blocks.length - 1
               return (
-                <div className="my-16" key={index}>
+                <div className={isLastBlock ? 'mt-16' : 'my-16'} key={index}>
                   {/* @ts-expect-error there may be some mismatch between the expected types here */}
                   <Block {...block} locale={locale} disableInnerContainer />
                 </div>

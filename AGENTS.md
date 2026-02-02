@@ -1150,6 +1150,22 @@ For deeper exploration of specific topics, refer to the context files located in
     - Performance best practices
     - Styling components
 
+14. **`blocks-heroes-methodology.md`** - Jardi Salomo blocks and heroes
+
+    - Block architecture and patterns
+    - Hero component structure
+    - Design system integration
+    - Best practices for blocks
+
+15. **`form-fields-style-guide.md`** - Form fields design system
+
+    - Visual styling standards for form fields
+    - Typography, colors, spacing
+    - Field types and components
+    - Error states and validation
+    - Accessibility guidelines
+    - Frontend-only (NOT for admin UI)
+
 ## Resources
 
 - Docs: https://payloadcms.com/docs

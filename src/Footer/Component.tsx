@@ -13,7 +13,7 @@ const instagramIconURL = new URL('../fields/socials/icons/instagram.svg', import
 
 export async function Footer() {
   const locale = await getRequestLocale()
-  const footerData: Footer = await getCachedGlobal('footer', 1, locale)()
+  const footerData: Footer = await getCachedGlobal('footer', 2, locale)()
 
   const navItems = footerData?.navItems || []
   const socials = footerData?.socials || []
@@ -82,6 +82,7 @@ export async function Footer() {
                 <CMSLink
                   key={i}
                   {...link}
+                  locale={locale}
                   className="font-serif uppercase tracking-[0.28em] text-sm text-primary-foreground/90 hover:text-primary-foreground transition-colors"
                 />
               )

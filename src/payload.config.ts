@@ -5,7 +5,9 @@ import { buildConfig, PayloadRequest } from 'payload'
 import { fileURLToPath } from 'node:url'
 import { es } from 'payload/i18n/es'
 
+import { Dishes } from './collections/Dishes'
 import { Media } from './collections/Media'
+import { Menus } from './collections/Menus'
 import { Pages } from './collections/Pages'
 import { Users } from './collections/Users'
 import { Footer } from './Footer/config'
@@ -14,6 +16,8 @@ import { Chatbot } from './globals/chatbot'
 import { allPlugins } from './plugins'
 import { defaultLexical } from '@/fields/defaultLexical'
 import { getServerSideURL } from './utilities/getURL'
+import { emailAdapter } from './email.config'
+import { testEmailEndpoint } from './endpoints/test-email'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -56,6 +60,7 @@ export default buildConfig({
       ],
     },
   },
+  email: emailAdapter,
   // i18n controls the UI language of the admin panel
   i18n: {
     supportedLanguages: { es },
@@ -72,9 +77,11 @@ export default buildConfig({
     pool: {
       connectionString: process.env.DATABASE_URL || '',
     },
+    push: process.env.NODE_ENV === 'development', // Auto-sync en desarrollo
   }),
-  collections: [Pages, Media, Users],
+  collections: [Pages, Media, Users, Dishes, Menus],
   cors: [getServerSideURL()].filter(Boolean),
+  endpoints: [testEmailEndpoint],
   globals: [Header, Footer, Chatbot],
   plugins: allPlugins,
   secret: process.env.PAYLOAD_SECRET,

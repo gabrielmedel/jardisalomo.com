@@ -26,7 +26,7 @@ export const Features: Block = {
         },
         {
           name: 'description',
-          type: 'textarea',
+          type: 'richText',
           required: true,
           localized: true,
           label: 'Descripción',
