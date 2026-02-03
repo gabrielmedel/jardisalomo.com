@@ -14,6 +14,37 @@ import { getServerSideURL } from '@/utilities/getURL'
 import { Chatbot } from '@/globals/chatbot'
 import { payloadAiPlugin } from '@ai-stack/payloadcms'
 
+// S3 Storage - conditionally imported only when needed
+// To avoid version mismatch errors in development
+let s3StoragePlugin: Plugin | undefined
+
+const isProduction = process.env.NODE_ENV === 'production'
+const s3Enabled = process.env.S3_ENABLED === 'true' || isProduction
+
+if (s3Enabled) {
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const { s3Storage } = require('@payloadcms/storage-s3')
+    s3StoragePlugin = s3Storage({
+      collections: {
+        media: true,
+      },
+      bucket: process.env.S3_BUCKET || 'jardisalomo',
+      config: {
+        credentials: {
+          accessKeyId: process.env.S3_ACCESS_KEY_ID!,
+          secretAccessKey: process.env.S3_SECRET_ACCESS_KEY!,
+        },
+        region: process.env.S3_REGION || 'us-east-1',
+        endpoint: process.env.S3_ENDPOINT,
+        forcePathStyle: true,
+      },
+    })
+  } catch (error) {
+    console.warn('⚠️  S3 storage plugin not available:', error)
+  }
+}
+
 // Get all available form field blocks for nested layouts
 const getFormFieldBlocks = (): Block[] => {
   const fieldBlocks: Block[] = []
@@ -391,15 +422,10 @@ export const plugins: Plugin[] = [
   }),
 ]
 
-// Note: S3 storage for production is configured but commented out due to version compatibility
-// Uncomment and configure in production once Payload is upgraded to 3.74.0+
-// For now, media will be stored locally in development and you'll need to manually enable
-// S3 in production by uncommenting the code below and setting S3_ENABLED=true
-
-// import { s3StoragePlugin } from './s3-storage'
-// if (process.env.NODE_ENV === 'production' && process.env.S3_ENABLED === 'true') {
-//   plugins.push(s3StoragePlugin)
-// }
+// S3 Storage plugin for production
+if (s3StoragePlugin) {
+  plugins.push(s3StoragePlugin)
+}
 
 // AI Translation plugin - DEBE IR AL FINAL para no ser sobrescrito
 export const aiTranslationPluginInstance = process.env.OPENAI_API_KEY
@@ -429,6 +455,6 @@ export const aiTranslationPluginInstance = process.env.OPENAI_API_KEY
 
 export const allPlugins = [
   ...plugins,
-  // s3StoragePluginInstance will be undefined until manually enabled in production
+  ...(s3StoragePlugin ? [s3StoragePlugin] : []),
   ...(aiTranslationPluginInstance ? [aiTranslationPluginInstance] : []),
 ]
