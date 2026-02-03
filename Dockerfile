@@ -71,13 +71,13 @@ ENV PORT=3000
 ENV HOSTNAME="0.0.0.0"
 
 # Healthcheck for Coolify
-# Checks if the application is responding on the root path
+# Checks if the application is responding on the admin path
 # Interval: check every 30 seconds
 # Timeout: wait 5 seconds for response
 # Start period: wait 40 seconds before first check (allows app to start)
 # Retries: fail after 3 consecutive failures
 HEALTHCHECK --interval=30s --timeout=5s --start-period=40s --retries=3 \
-  CMD curl -f http://localhost:3000/api || exit 1
+  CMD curl -f http://localhost:3000/admin || exit 1
 
 # server.js is created by next build from the standalone output
 # https://nextjs.org/docs/pages/api-reference/next-config-js/output
