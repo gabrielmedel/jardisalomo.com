@@ -1,6 +1,6 @@
 'use client'
 import { useHeaderTheme } from '@/providers/HeaderTheme'
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useMemo } from 'react'
 import { motion, useScroll, useTransform } from 'framer-motion'
 
 import type { Page } from '@/payload-types'
@@ -8,6 +8,22 @@ import type { Page } from '@/payload-types'
 import { CMSLink } from '@/components/Link'
 import { Media } from '@/components/Media'
 import RichText from '@/components/RichText'
+
+// Get direct MinIO URL for videos (required for iOS Range request support)
+function getVideoUrl(media: Page['hero']['media']): string {
+  if (!media || typeof media !== 'object' || !media.filename) return ''
+
+  // Use direct MinIO URL if configured (for iOS compatibility)
+  const s3Endpoint = process.env.NEXT_PUBLIC_S3_PUBLIC_ENDPOINT
+  const s3Bucket = process.env.NEXT_PUBLIC_S3_BUCKET
+
+  if (s3Endpoint && s3Bucket) {
+    return `${s3Endpoint}/${s3Bucket}/${media.filename}`
+  }
+
+  // Fallback to Payload URL
+  return media.url || ''
+}
 
 export const HighImpactHero: React.FC<Page['hero'] & { locale?: string }> = ({
   links,
@@ -25,6 +41,14 @@ export const HighImpactHero: React.FC<Page['hero'] & { locale?: string }> = ({
   })
 
   const y = useTransform(scrollYProgress, [0, 1], ['0%', '35%'])
+
+  // Get direct video URL for iOS compatibility
+  const videoUrl = useMemo(() => {
+    if (media && typeof media === 'object' && media.mimeType?.startsWith('video/')) {
+      return getVideoUrl(media)
+    }
+    return ''
+  }, [media])
 
   useEffect(() => {
     setHeaderTheme('dark')
@@ -44,8 +68,16 @@ export const HighImpactHero: React.FC<Page['hero'] & { locale?: string }> = ({
         {media && typeof media === 'object' && (
           <>
             {media.mimeType?.startsWith('video/') ? (
-              <video autoPlay loop muted playsInline className="w-full h-full object-cover">
-                <source src={media.url || ''} type={media.mimeType || ''} />
+              <video
+                autoPlay
+                loop
+                muted
+                playsInline
+                preload="metadata"
+                poster={media.thumbnailURL || undefined}
+                className="w-full h-full object-cover"
+              >
+                <source src={videoUrl} type={media.mimeType || ''} />
               </video>
             ) : (
               <Media fill imgClassName="object-cover" priority resource={media} />
