@@ -11,14 +11,25 @@ const nextConfig = {
   output: 'standalone',
   images: {
     remotePatterns: [
-      ...[NEXT_PUBLIC_SERVER_URL /* 'https://example.com' */].map((item) => {
-        const url = new URL(item)
-
-        return {
-          hostname: url.hostname,
-          protocol: url.protocol.replace(':', ''),
-        }
-      }),
+      // Production domain
+      {
+        hostname: 'eljardisalomo.com',
+        protocol: 'https',
+      },
+      {
+        hostname: 'www.eljardisalomo.com',
+        protocol: 'https',
+      },
+      // MinIO storage (production)
+      {
+        hostname: 'minio-api.coolify.eljardisalomo.com',
+        protocol: 'https',
+      },
+      // Local development
+      {
+        hostname: 'localhost',
+        protocol: 'http',
+      },
     ],
   },
   webpack: (webpackConfig) => {
