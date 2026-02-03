@@ -18,6 +18,7 @@ import { defaultLexical } from '@/fields/defaultLexical'
 import { getServerSideURL } from './utilities/getURL'
 import { emailAdapter } from './email.config'
 import { testEmailEndpoint } from './endpoints/test-email'
+import { migrations } from './migrations'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -31,6 +32,11 @@ export default buildConfig({
       // The `BeforeDashboard` component renders the 'welcome' block that you see after logging into your admin panel.
       // Feel free to delete this at any time. Simply remove the line below.
       beforeDashboard: ['@/components/BeforeDashboard'],
+      // Custom graphics for logo and icon
+      graphics: {
+        Logo: '@/components/admin/Logo#Logo',
+        Icon: '@/components/admin/Icon#Icon',
+      },
     },
     importMap: {
       baseDir: path.resolve(dirname),
@@ -60,6 +66,16 @@ export default buildConfig({
       ],
     },
   },
+  // Favicon configuration for admin panel
+  meta: {
+    titleSuffix: '- Jardi Salomó',
+    description: 'Panel de administración de Jardi Salomó',
+    icons: [
+      {
+        url: '/favicon.ico',
+      },
+    ],
+  },
   email: emailAdapter,
   // i18n controls the UI language of the admin panel
   i18n: {
@@ -77,7 +93,8 @@ export default buildConfig({
     pool: {
       connectionString: process.env.DATABASE_URL || '',
     },
-    push: process.env.NODE_ENV === 'development', // Auto-sync en desarrollo
+    push: process.env.NODE_ENV === 'development', // Solo push en desarrollo
+    prodMigrations: migrations, // Ejecutar migraciones en producción al iniciar
   }),
   collections: [Pages, Media, Users, Dishes, Menus],
   cors: [getServerSideURL()].filter(Boolean),

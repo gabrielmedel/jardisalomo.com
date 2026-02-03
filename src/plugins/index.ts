@@ -391,6 +391,16 @@ export const plugins: Plugin[] = [
   }),
 ]
 
+// Note: S3 storage for production is configured but commented out due to version compatibility
+// Uncomment and configure in production once Payload is upgraded to 3.74.0+
+// For now, media will be stored locally in development and you'll need to manually enable
+// S3 in production by uncommenting the code below and setting S3_ENABLED=true
+
+// import { s3StoragePlugin } from './s3-storage'
+// if (process.env.NODE_ENV === 'production' && process.env.S3_ENABLED === 'true') {
+//   plugins.push(s3StoragePlugin)
+// }
+
 // AI Translation plugin - DEBE IR AL FINAL para no ser sobrescrito
 export const aiTranslationPluginInstance = process.env.OPENAI_API_KEY
   ? aiTranslationPlugin({
@@ -417,6 +427,8 @@ export const aiTranslationPluginInstance = process.env.OPENAI_API_KEY
     })
   : undefined
 
-export const allPlugins = aiTranslationPluginInstance
-  ? [...plugins, aiTranslationPluginInstance]
-  : plugins
+export const allPlugins = [
+  ...plugins,
+  // s3StoragePluginInstance will be undefined until manually enabled in production
+  ...(aiTranslationPluginInstance ? [aiTranslationPluginInstance] : []),
+]
