@@ -158,16 +158,34 @@ No necesitas cambiar nada aquí.
 
 ## 5. Health Checks
 
-Configura un health check para que Coolify verifique que la app está funcionando:
+El Dockerfile ya incluye un healthcheck configurado que Coolify detectará automáticamente:
 
-1. Ve a **Health Check**
-2. Configuración:
+```dockerfile
+HEALTHCHECK --interval=30s --timeout=5s --start-period=40s --retries=3 \
+  CMD curl -f http://localhost:3000/api || exit 1
+```
+
+**Parámetros del Healthcheck:**
+- **Endpoint**: `/api` (Payload API endpoint)
+- **Intervalo**: Cada 30 segundos
+- **Timeout**: 5 segundos de espera por respuesta
+- **Start Period**: 40 segundos antes del primer check (permite que la app inicie)
+- **Retries**: 3 intentos fallidos antes de marcar como unhealthy
+
+### Configuración Opcional en Coolify
+
+Si necesitas ajustar el healthcheck en Coolify (opcional):
+
+1. Ve a **Health Check** en la configuración de la app
+2. Configuración recomendada:
    - **Method**: `GET`
-   - **Path**: `/api` o `/`
+   - **Path**: `/api`
    - **Port**: `3000`
    - **Interval**: `30s`
    - **Timeout**: `5s`
    - **Retries**: `3`
+
+**Nota**: Coolify respetará el healthcheck del Dockerfile automáticamente, pero puedes sobrescribirlo aquí si es necesario.
 
 ---
 

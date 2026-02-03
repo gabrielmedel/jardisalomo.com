@@ -41,12 +41,15 @@ RUN \
 FROM base AS runner
 WORKDIR /app
 
-ENV NODE_ENV production
+ENV NODE_ENV=production
 # Uncomment the following line in case you want to disable telemetry during runtime.
-# ENV NEXT_TELEMETRY_DISABLED 1
+# ENV NEXT_TELEMETRY_DISABLED=1
 
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
+
+# Install curl for healthcheck
+RUN apk add --no-cache curl
 
 # Remove this line if you do not have this folder
 COPY --from=builder /app/public ./public
@@ -64,8 +67,18 @@ USER nextjs
 
 EXPOSE 3000
 
-ENV PORT 3000
+ENV PORT=3000
+ENV HOSTNAME="0.0.0.0"
+
+# Healthcheck for Coolify
+# Checks if the application is responding on the root path
+# Interval: check every 30 seconds
+# Timeout: wait 5 seconds for response
+# Start period: wait 40 seconds before first check (allows app to start)
+# Retries: fail after 3 consecutive failures
+HEALTHCHECK --interval=30s --timeout=5s --start-period=40s --retries=3 \
+  CMD curl -f http://localhost:3000/api || exit 1
 
 # server.js is created by next build from the standalone output
 # https://nextjs.org/docs/pages/api-reference/next-config-js/output
-CMD HOSTNAME="0.0.0.0" node server.js
+CMD ["node", "server.js"]

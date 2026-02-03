@@ -17,7 +17,19 @@ Sigue esta guía paso a paso antes de tu primer despliegue. Incluye:
 
 ---
 
-### 2. [MINIO-SETUP.md](./MINIO-SETUP.md)
+### 2. [DOCKER-SETUP.md](./DOCKER-SETUP.md)
+**Configuración Docker y optimizaciones**
+
+Guía técnica sobre el Dockerfile del proyecto:
+- Explicación del multi-stage build
+- Healthcheck configurado y optimizado
+- Troubleshooting de build/deploy
+- Testing local con Docker
+- Métricas y optimización de tamaño
+
+---
+
+### 3. [MINIO-SETUP.md](./MINIO-SETUP.md)
 **Configuración detallada de MinIO (S3 compatible)**
 
 Guía técnica completa para configurar MinIO en Coolify:
@@ -30,7 +42,7 @@ Guía técnica completa para configurar MinIO en Coolify:
 
 ---
 
-### 3. [COOLIFY-CONFIG.md](./COOLIFY-CONFIG.md)
+### 4. [COOLIFY-CONFIG.md](./COOLIFY-CONFIG.md)
 **Configuración de Coolify y variables de entorno**
 
 Referencia detallada para configurar la aplicación en Coolify:
@@ -48,14 +60,18 @@ Referencia detallada para configurar la aplicación en Coolify:
 ```
 1. Lee BEFORE-FIRST-DEPLOY.md
    └── Sigue el checklist de Fase 1 (Local)
+   └── ⚠️ Si ya usaste push:true en desarrollo, lee MARK-MIGRATION-EXECUTED.md
 
-2. Consulta MINIO-SETUP.md
+2. Consulta DOCKER-SETUP.md
+   └── Entiende el Dockerfile y healthcheck
+
+3. Consulta MINIO-SETUP.md
    └── Configura MinIO en Coolify
 
-3. Consulta COOLIFY-CONFIG.md
+4. Consulta COOLIFY-CONFIG.md
    └── Configura variables y despliegue
 
-4. Vuelve a BEFORE-FIRST-DEPLOY.md
+5. Vuelve a BEFORE-FIRST-DEPLOY.md
    └── Completa Fase 2, 3 y 4
 ```
 
