@@ -10,10 +10,10 @@ interface MenuHeaderProps {
 export const MenuHeader: React.FC<MenuHeaderProps> = ({ preTitle, title }) => {
   return (
     <div className="w-full">
-      {preTitle && <p className="pretitle pretitle--secondary">{preTitle}</p>}
+      {preTitle && <p className="pretitle pretitle--secondary font-sans">{preTitle}</p>}
       {title && (
         <RichText
-          className="block-richtext"
+          className="block-richtext font-sans"
           data={title}
           enableGutter={false}
           enableProse={false}

@@ -14,8 +14,8 @@ export const MenuPricingItem: React.FC<MenuPricingItemProps> = ({
 }) => {
   return (
     <div className="space-y-1.5">
-      <p className="text-sm font-medium text-gray-600 md:text-base">{label}</p>
-      <p className="text-xl font-semibold text-gray-900 md:text-2xl">
+      <p className="font-sans text-sm font-medium text-gray-600 md:text-base">{label}</p>
+      <p className="font-sans text-xl font-semibold text-gray-900 md:text-2xl">
         {price}
         <span className="ml-1 text-sm font-normal text-gray-600 md:text-base">{perPriceLabel}</span>
       </p>

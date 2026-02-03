@@ -37,7 +37,7 @@ export const MenuDisplayBlock: React.FC<BlockProps & { locale?: string }> = ({
   return (
     <section
       ref={sectionRef}
-      className={`relative w-full pb-32 overflow-hidden ${getBackgroundClass()}`}
+      className={`relative w-full pb-32 my-32 -mb-16 overflow-hidden ${getBackgroundClass()}`}
     >
       {/* Background image section */}
       {backgroundImage && typeof backgroundImage === 'object' && (

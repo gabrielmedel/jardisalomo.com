@@ -18,7 +18,7 @@ export const MenuInfoItem: React.FC<MenuInfoItemProps> = ({ type, label }) => {
   return (
     <div className="flex flex-col items-center gap-3">
       <div className="text-gray-700">{icon}</div>
-      <p className="text-sm font-medium text-gray-700 md:text-base">{label}</p>
+      <p className="font-sans text-sm font-medium text-gray-700 md:text-base">{label}</p>
     </div>
   )
 }

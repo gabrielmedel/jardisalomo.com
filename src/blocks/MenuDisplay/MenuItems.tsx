@@ -13,7 +13,7 @@ export const MenuItems: React.FC<MenuItemsProps> = ({ menuItems }) => {
   }
 
   return (
-    <div className="w-full space-y-8 md:space-y-10">
+    <div className="w-full space-y-12 md:space-y-14">
       {menuItems.map((item: any, index: number) => (
         <MenuItem key={index} content={item.content} />
       ))}
