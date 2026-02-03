@@ -30,6 +30,13 @@ COPY . .
 # Uncomment the following line in case you want to disable telemetry during the build.
 # ENV NEXT_TELEMETRY_DISABLED 1
 
+# Generate importMap before building to ensure all client components are registered
+RUN \
+  if [ -f pnpm-lock.yaml ]; then corepack enable pnpm && pnpm generate:importmap; \
+  elif [ -f yarn.lock ]; then yarn generate:importmap; \
+  elif [ -f package-lock.json ]; then npm run generate:importmap; \
+  fi
+
 RUN \
   if [ -f yarn.lock ]; then yarn run build; \
   elif [ -f package-lock.json ]; then npm run build; \
@@ -45,18 +52,15 @@ ENV NODE_ENV=production
 # Uncomment the following line in case you want to disable telemetry during runtime.
 # ENV NEXT_TELEMETRY_DISABLED=1
 
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
-
-# Install curl for healthcheck
-RUN apk add --no-cache curl
+# Create user/group, install curl for healthcheck, and setup .next directory
+RUN addgroup --system --gid 1001 nodejs && \
+    adduser --system --uid 1001 nextjs && \
+    apk add --no-cache curl && \
+    mkdir .next && \
+    chown nextjs:nodejs .next
 
 # Remove this line if you do not have this folder
 COPY --from=builder /app/public ./public
-
-# Set the correct permission for prerender cache
-RUN mkdir .next
-RUN chown nextjs:nodejs .next
 
 # Automatically leverage output traces to reduce image size
 # https://nextjs.org/docs/advanced-features/output-file-tracing

@@ -41,6 +41,14 @@ export default buildConfig({
         Icon: '@/components/admin/Icon#Icon',
       },
     },
+    // Ensure required client components exist in the import map even when a plugin
+    // is disabled during build time (e.g. missing env vars).
+    dependencies: {
+      s3ClientUploadHandler: {
+        path: '@payloadcms/storage-s3/client#S3ClientUploadHandler',
+        type: 'component',
+      },
+    },
     importMap: {
       baseDir: path.resolve(dirname),
     },
