@@ -15,6 +15,8 @@ import { getServerSideURL } from '@/utilities/getURL'
 import { Chatbot } from '@/globals/chatbot'
 import { payloadAiPlugin } from '@ai-stack/payloadcms'
 
+// NOTE: We include the S3 plugin in ALL environments so its client components
+// are present in the generated import map. We only enable it in production.
 const s3Enabled =
   process.env.NODE_ENV === 'production' &&
   Boolean(process.env.S3_ENDPOINT) &&
@@ -22,23 +24,24 @@ const s3Enabled =
   Boolean(process.env.S3_ACCESS_KEY_ID) &&
   Boolean(process.env.S3_SECRET_ACCESS_KEY)
 
-const s3StoragePlugin: Plugin | undefined = s3Enabled
-  ? s3Storage({
-      collections: {
-        media: true,
-      },
-      bucket: process.env.S3_BUCKET!,
-      config: {
-        credentials: {
-          accessKeyId: process.env.S3_ACCESS_KEY_ID!,
-          secretAccessKey: process.env.S3_SECRET_ACCESS_KEY!,
-        },
-        region: process.env.S3_REGION || 'us-east-1',
-        endpoint: process.env.S3_ENDPOINT,
-        forcePathStyle: true, // Required for MinIO
-      },
-    })
-  : undefined
+const s3StoragePlugin: Plugin = s3Storage({
+  enabled: s3Enabled,
+  collections: {
+    media: true,
+  },
+  // When disabled, these can be placeholders. When enabled, env vars must exist.
+  bucket: process.env.S3_BUCKET || 'disabled',
+  config: {
+    credentials: {
+      accessKeyId: process.env.S3_ACCESS_KEY_ID || 'disabled',
+      secretAccessKey: process.env.S3_SECRET_ACCESS_KEY || 'disabled',
+    },
+    region: process.env.S3_REGION || 'us-east-1',
+    endpoint: process.env.S3_ENDPOINT,
+    forcePathStyle: true, // Required for MinIO
+  },
+  disableLocalStorage: true,
+})
 
 // Get all available form field blocks for nested layouts
 const getFormFieldBlocks = (): Block[] => {
@@ -271,7 +274,7 @@ export const plugins: Plugin[] = [
     generateTitle,
     generateURL,
   }),
-  ...(s3StoragePlugin ? [s3StoragePlugin] : []),
+  s3StoragePlugin,
   formBuilderPlugin({
     fields: {
       payment: false,
