@@ -66,16 +66,6 @@ export default buildConfig({
       ],
     },
   },
-  // Favicon configuration for admin panel
-  meta: {
-    titleSuffix: '- Jardi Salomó',
-    description: 'Panel de administración de Jardi Salomó',
-    icons: [
-      {
-        url: '/favicon.ico',
-      },
-    ],
-  },
   email: emailAdapter,
   // i18n controls the UI language of the admin panel
   i18n: {
