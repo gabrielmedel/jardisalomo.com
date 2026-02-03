@@ -22,6 +22,9 @@ import { migrations } from './migrations'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
+const isNextBuild = process.env.NEXT_PHASE === 'phase-production-build'
+const runProdMigrations =
+  process.env.NODE_ENV === 'production' && !isNextBuild && process.env.PAYLOAD_RUN_MIGRATIONS === 'true'
 
 export default buildConfig({
   admin: {
@@ -84,7 +87,7 @@ export default buildConfig({
       connectionString: process.env.DATABASE_URL || '',
     },
     push: process.env.NODE_ENV === 'development', // Solo push en desarrollo
-    prodMigrations: migrations, // Ejecutar migraciones en producción al iniciar
+    ...(runProdMigrations ? { prodMigrations: migrations } : {}),
   }),
   collections: [Pages, Media, Users, Dishes, Menus],
   cors: [getServerSideURL()].filter(Boolean),

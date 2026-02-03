@@ -1,6 +1,7 @@
 import { formBuilderPlugin, fields as formFields } from '@payloadcms/plugin-form-builder'
 import { redirectsPlugin } from '@payloadcms/plugin-redirects'
 import { seoPlugin } from '@payloadcms/plugin-seo'
+import { s3Storage } from '@payloadcms/storage-s3'
 import { Block, Plugin } from 'payload'
 import { revalidateRedirects } from '@/hooks/revalidateRedirects'
 import { GenerateTitle, GenerateURL } from '@payloadcms/plugin-seo/types'
@@ -14,22 +15,19 @@ import { getServerSideURL } from '@/utilities/getURL'
 import { Chatbot } from '@/globals/chatbot'
 import { payloadAiPlugin } from '@ai-stack/payloadcms'
 
-// S3 Storage - conditionally imported only when needed
-// To avoid version mismatch errors in development
-let s3StoragePlugin: Plugin | undefined
+const s3Enabled =
+  process.env.NODE_ENV === 'production' &&
+  Boolean(process.env.S3_ENDPOINT) &&
+  Boolean(process.env.S3_BUCKET) &&
+  Boolean(process.env.S3_ACCESS_KEY_ID) &&
+  Boolean(process.env.S3_SECRET_ACCESS_KEY)
 
-const isProduction = process.env.NODE_ENV === 'production'
-const s3Enabled = process.env.S3_ENABLED === 'true' || isProduction
-
-if (s3Enabled) {
-  try {
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const { s3Storage } = require('@payloadcms/storage-s3')
-    s3StoragePlugin = s3Storage({
+const s3StoragePlugin: Plugin | undefined = s3Enabled
+  ? s3Storage({
       collections: {
         media: true,
       },
-      bucket: process.env.S3_BUCKET || 'jardisalomo',
+      bucket: process.env.S3_BUCKET!,
       config: {
         credentials: {
           accessKeyId: process.env.S3_ACCESS_KEY_ID!,
@@ -37,13 +35,10 @@ if (s3Enabled) {
         },
         region: process.env.S3_REGION || 'us-east-1',
         endpoint: process.env.S3_ENDPOINT,
-        forcePathStyle: true,
+        forcePathStyle: true, // Required for MinIO
       },
     })
-  } catch (error) {
-    console.warn('⚠️  S3 storage plugin not available:', error)
-  }
-}
+  : undefined
 
 // Get all available form field blocks for nested layouts
 const getFormFieldBlocks = (): Block[] => {
@@ -276,6 +271,7 @@ export const plugins: Plugin[] = [
     generateTitle,
     generateURL,
   }),
+  ...(s3StoragePlugin ? [s3StoragePlugin] : []),
   formBuilderPlugin({
     fields: {
       payment: false,
@@ -422,11 +418,6 @@ export const plugins: Plugin[] = [
   }),
 ]
 
-// S3 Storage plugin for production
-if (s3StoragePlugin) {
-  plugins.push(s3StoragePlugin)
-}
-
 // AI Translation plugin - DEBE IR AL FINAL para no ser sobrescrito
 export const aiTranslationPluginInstance = process.env.OPENAI_API_KEY
   ? aiTranslationPlugin({
@@ -453,8 +444,4 @@ export const aiTranslationPluginInstance = process.env.OPENAI_API_KEY
     })
   : undefined
 
-export const allPlugins = [
-  ...plugins,
-  ...(s3StoragePlugin ? [s3StoragePlugin] : []),
-  ...(aiTranslationPluginInstance ? [aiTranslationPluginInstance] : []),
-]
+export const allPlugins = aiTranslationPluginInstance ? [...plugins, aiTranslationPluginInstance] : plugins
