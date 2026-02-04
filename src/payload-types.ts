@@ -129,11 +129,15 @@ export interface Config {
     header: Header;
     footer: Footer;
     chatbot: Chatbot;
+    'daily-menu': DailyMenu;
+    'monthly-menu': MonthlyMenu;
   };
   globalsSelect: {
     header: HeaderSelect<false> | HeaderSelect<true>;
     footer: FooterSelect<false> | FooterSelect<true>;
     chatbot: ChatbotSelect<false> | ChatbotSelect<true>;
+    'daily-menu': DailyMenuSelect<false> | DailyMenuSelect<true>;
+    'monthly-menu': MonthlyMenuSelect<false> | MonthlyMenuSelect<true>;
   };
   locale: 'es' | 'ca' | 'en';
   user: User & {
@@ -3150,6 +3154,32 @@ export interface Chatbot {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "daily-menu".
+ */
+export interface DailyMenu {
+  id: number;
+  /**
+   * Upload the daily menu here. It will be automatically replaced when uploading a new one.
+   */
+  menuFile?: (number | null) | Media;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "monthly-menu".
+ */
+export interface MonthlyMenu {
+  id: number;
+  /**
+   * Upload the monthly menu here. It will be automatically replaced when uploading a new one.
+   */
+  menuFile?: (number | null) | Media;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "header_select".
  */
 export interface HeaderSelect<T extends boolean = true> {
@@ -3277,6 +3307,26 @@ export interface ChatbotSelect<T extends boolean = true> {
         priority?: T;
         id?: T;
       };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "daily-menu_select".
+ */
+export interface DailyMenuSelect<T extends boolean = true> {
+  menuFile?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "monthly-menu_select".
+ */
+export interface MonthlyMenuSelect<T extends boolean = true> {
+  menuFile?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

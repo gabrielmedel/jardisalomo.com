@@ -28,6 +28,8 @@ import { RowLabel as RowLabel_ec255a65fa6fa8d1faeb09cf35284224 } from '@/Header/
 import { RowLabel as RowLabel_1f6ff6ff633e3695d348f4f3c58f1466 } from '@/Footer/RowLabel'
 import { ComposeField as ComposeField_c25bd927cd468b8e16d7bdb2cc282659 } from '@ai-stack/payloadcms/fields'
 import { LexicalEditorFeatureClient as LexicalEditorFeatureClient_4490b89d4413c1ffaecdacfe72efaf73 } from '@ai-stack/payloadcms/client'
+import { DailyMenuView as DailyMenuView_5cd0d76c01c9e4e1d1131a5e495cc9fa } from '@/components/DailyMenuView/DailyMenuView'
+import { MonthlyMenuView as MonthlyMenuView_0804b370d2e9955940f43b7cd27d3b84 } from '@/components/MonthlyMenuView/MonthlyMenuView'
 import { Icon as Icon_534076e2c753ea5d539a54b05f456b1b } from '@/components/admin/Icon'
 import { Logo as Logo_a44df17d0fc3dcd873dae43dc3bf66bd } from '@/components/admin/Logo'
 import { default as default_1a7510af427896d367a49dbf838d2de6 } from '@/components/BeforeDashboard'
@@ -67,6 +69,8 @@ export const importMap = {
   "@/Footer/RowLabel#RowLabel": RowLabel_1f6ff6ff633e3695d348f4f3c58f1466,
   "@ai-stack/payloadcms/fields#ComposeField": ComposeField_c25bd927cd468b8e16d7bdb2cc282659,
   "@ai-stack/payloadcms/client#LexicalEditorFeatureClient": LexicalEditorFeatureClient_4490b89d4413c1ffaecdacfe72efaf73,
+  "@/components/DailyMenuView/DailyMenuView#DailyMenuView": DailyMenuView_5cd0d76c01c9e4e1d1131a5e495cc9fa,
+  "@/components/MonthlyMenuView/MonthlyMenuView#MonthlyMenuView": MonthlyMenuView_0804b370d2e9955940f43b7cd27d3b84,
   "@/components/admin/Icon#Icon": Icon_534076e2c753ea5d539a54b05f456b1b,
   "@/components/admin/Logo#Logo": Logo_a44df17d0fc3dcd873dae43dc3bf66bd,
   "@/components/BeforeDashboard#default": default_1a7510af427896d367a49dbf838d2de6,

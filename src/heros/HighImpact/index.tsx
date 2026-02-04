@@ -34,6 +34,7 @@ export const HighImpactHero: React.FC<Page['hero'] & { locale?: string }> = ({
 }) => {
   const { setHeaderTheme } = useHeaderTheme()
   const sectionRef = useRef<HTMLElement>(null)
+  const videoRef = useRef<HTMLVideoElement>(null)
 
   const { scrollYProgress } = useScroll({
     target: sectionRef,
@@ -57,6 +58,18 @@ export const HighImpactHero: React.FC<Page['hero'] & { locale?: string }> = ({
     }
   }, [setHeaderTheme])
 
+  // Force video play on mount (iOS workaround)
+  useEffect(() => {
+    if (videoRef.current) {
+      const playPromise = videoRef.current.play()
+      if (playPromise !== undefined) {
+        playPromise.catch((error) => {
+          console.log('Video autoplay prevented:', error)
+        })
+      }
+    }
+  }, [videoUrl])
+
   return (
     <section
       ref={sectionRef}
@@ -69,13 +82,16 @@ export const HighImpactHero: React.FC<Page['hero'] & { locale?: string }> = ({
           <>
             {media.mimeType?.startsWith('video/') ? (
               <video
+                ref={videoRef}
                 autoPlay
                 loop
                 muted
                 playsInline
-                preload="metadata"
+                webkit-playsinline="true"
+                preload="auto"
                 poster={media.thumbnailURL || undefined}
                 className="w-full h-full object-cover"
+                style={{ objectFit: 'cover' }}
               >
                 <source src={videoUrl} type={media.mimeType || ''} />
               </video>

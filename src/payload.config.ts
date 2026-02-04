@@ -13,12 +13,16 @@ import { Users } from './collections/Users'
 import { Footer } from './Footer/config'
 import { Header } from './Header/config'
 import { Chatbot } from './globals/chatbot'
+import { DailyMenu } from './globals/DailyMenu'
+import { MonthlyMenu } from './globals/MonthlyMenu'
 import { allPlugins } from './plugins'
 import { defaultLexical } from '@/fields/defaultLexical'
 import { getServerSideURL } from './utilities/getURL'
 import { emailAdapter } from './email.config'
 import { testEmailEndpoint } from './endpoints/test-email'
 import { migrations } from './migrations'
+import { dailyMenuTranslations } from './components/DailyMenuView/translations'
+import { monthlyMenuTranslations } from './components/MonthlyMenuView/translations'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -82,6 +86,20 @@ export default buildConfig({
   i18n: {
     supportedLanguages: { es },
     fallbackLanguage: 'es',
+    translations: {
+      en: {
+        ...dailyMenuTranslations.en,
+        ...monthlyMenuTranslations.en,
+      },
+      es: {
+        ...dailyMenuTranslations.es,
+        ...monthlyMenuTranslations.es,
+      },
+      ca: {
+        ...dailyMenuTranslations.ca,
+        ...monthlyMenuTranslations.ca,
+      },
+    },
   },
   localization: {
     locales: ['es', 'ca', 'en'],
@@ -100,7 +118,7 @@ export default buildConfig({
   collections: [Pages, Media, Users, Dishes, Menus],
   cors: [getServerSideURL()].filter(Boolean),
   endpoints: [testEmailEndpoint],
-  globals: [Header, Footer, Chatbot],
+  globals: [Header, Footer, Chatbot, DailyMenu, MonthlyMenu],
   plugins: allPlugins,
   secret: process.env.PAYLOAD_SECRET,
   sharp,
