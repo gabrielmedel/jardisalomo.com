@@ -47,19 +47,28 @@ export const MonthlyMenu: GlobalConfig = {
   hooks: {
     afterChange: [
       async ({ doc, req, previousDoc }) => {
+        // Helper to extract media ID from different formats
+        const getMediaId = (
+          menuFile: unknown,
+        ): number | string | null => {
+          if (!menuFile) return null
+          if (typeof menuFile === 'number') return menuFile
+          if (typeof menuFile === 'string') return menuFile
+          if (typeof menuFile === 'object' && menuFile !== null && 'id' in menuFile) {
+            return (menuFile as { id: number | string }).id
+          }
+          return null
+        }
+
+        const previousId = getMediaId(previousDoc?.menuFile)
+        const currentId = getMediaId(doc.menuFile)
+
         // Si hay un archivo anterior y es diferente al nuevo, eliminarlo
-        if (
-          previousDoc?.menuFile &&
-          doc.menuFile &&
-          previousDoc.menuFile !== doc.menuFile
-        ) {
+        if (previousId && currentId && previousId !== currentId) {
           try {
             await req.payload.delete({
               collection: 'media',
-              id:
-                typeof previousDoc.menuFile === 'string'
-                  ? previousDoc.menuFile
-                  : previousDoc.menuFile.id,
+              id: previousId,
               req,
             })
           } catch (error) {
