@@ -18,6 +18,15 @@ export const MonthlyMenuView = () => {
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [isDragging, setIsDragging] = useState(false)
 
+  // URL fija para el menú - nunca cambia
+  const getFixedMenuUrl = () => {
+    if (globalThis.window === undefined) {
+      return '/api/menu/monthly'
+    }
+    return `${globalThis.location.origin}/api/menu/monthly`
+  }
+  const fixedMenuUrl = getFixedMenuUrl()
+
   // Cargar el archivo actual
   const loadCurrentFile = useCallback(async () => {
     try {
@@ -137,13 +146,9 @@ export const MonthlyMenuView = () => {
     }
   }
 
-  // Copiar URL al portapapeles
+  // Copiar URL fija al portapapeles
   const handleCopyUrl = () => {
-    if (!currentFile?.url) return
-
-    const fullUrl = getMediaUrl(currentFile.url)
-
-    navigator.clipboard.writeText(fullUrl).then(() => {
+    navigator.clipboard.writeText(fixedMenuUrl).then(() => {
       setCopiedUrl(true)
       setTimeout(() => setCopiedUrl(false), 2000)
     })
@@ -216,7 +221,7 @@ export const MonthlyMenuView = () => {
                 <input
                   id="menu-url"
                   type="text"
-                  value={getMediaUrl(currentFile.url)}
+                  value={fixedMenuUrl}
                   readOnly
                   className={styles.urlField}
                 />
@@ -236,11 +241,7 @@ export const MonthlyMenuView = () => {
               >
                 {isUploading ? t('monthlyMenu:uploading') : t('monthlyMenu:replace')}
               </Button>
-              <a
-                href={getMediaUrl(currentFile.url)}
-                download={currentFile.filename}
-                className={styles.downloadLink}
-              >
+              <a href={fixedMenuUrl} target="_blank" rel="noopener noreferrer" className={styles.downloadLink}>
                 <Button buttonStyle="secondary" icon="download">
                   {t('monthlyMenu:download')}
                 </Button>

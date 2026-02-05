@@ -47,10 +47,8 @@ export const DailyMenu: GlobalConfig = {
   hooks: {
     afterChange: [
       async ({ doc, req, previousDoc }) => {
-        // Helper to extract media ID from different formats
-        const getMediaId = (
-          menuFile: unknown,
-        ): number | string | null => {
+        // Helper to extract media ID from different formats (number, string, or object)
+        const getMediaId = (menuFile: unknown): number | string | null => {
           if (!menuFile) return null
           if (typeof menuFile === 'number') return menuFile
           if (typeof menuFile === 'string') return menuFile

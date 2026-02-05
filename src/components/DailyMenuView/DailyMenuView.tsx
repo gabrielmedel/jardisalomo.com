@@ -18,6 +18,15 @@ export const DailyMenuView = () => {
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [isDragging, setIsDragging] = useState(false)
 
+  // URL fija para el menú - nunca cambia
+  const getFixedMenuUrl = () => {
+    if (globalThis.window === undefined) {
+      return '/api/menu/daily'
+    }
+    return `${globalThis.location.origin}/api/menu/daily`
+  }
+  const fixedMenuUrl = getFixedMenuUrl()
+
   // Cargar el archivo actual
   const loadCurrentFile = useCallback(async () => {
     try {
@@ -137,13 +146,9 @@ export const DailyMenuView = () => {
     }
   }
 
-  // Copiar URL al portapapeles
+  // Copiar URL fija al portapapeles
   const handleCopyUrl = () => {
-    if (!currentFile?.url) return
-
-    const fullUrl = getMediaUrl(currentFile.url)
-
-    navigator.clipboard.writeText(fullUrl).then(() => {
+    navigator.clipboard.writeText(fixedMenuUrl).then(() => {
       setCopiedUrl(true)
       setTimeout(() => setCopiedUrl(false), 2000)
     })
@@ -216,7 +221,7 @@ export const DailyMenuView = () => {
                 <input
                   id="menu-url"
                   type="text"
-                  value={getMediaUrl(currentFile.url)}
+                  value={fixedMenuUrl}
                   readOnly
                   className={styles.urlField}
                 />
@@ -236,11 +241,7 @@ export const DailyMenuView = () => {
               >
                 {isUploading ? t('dailyMenu:uploading') : t('dailyMenu:replace')}
               </Button>
-              <a
-                href={getMediaUrl(currentFile.url)}
-                download={currentFile.filename}
-                className={styles.downloadLink}
-              >
+              <a href={fixedMenuUrl} target="_blank" rel="noopener noreferrer" className={styles.downloadLink}>
                 <Button buttonStyle="secondary" icon="download">
                   {t('dailyMenu:download')}
                 </Button>

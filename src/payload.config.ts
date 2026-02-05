@@ -20,6 +20,7 @@ import { defaultLexical } from '@/fields/defaultLexical'
 import { getServerSideURL } from './utilities/getURL'
 import { emailAdapter } from './email.config'
 import { testEmailEndpoint } from './endpoints/test-email'
+import { dailyMenuDownload, monthlyMenuDownload } from './endpoints/menu-download'
 import { migrations } from './migrations'
 import { dailyMenuTranslations } from './components/DailyMenuView/translations'
 import { monthlyMenuTranslations } from './components/MonthlyMenuView/translations'
@@ -117,7 +118,7 @@ export default buildConfig({
   }),
   collections: [Pages, Media, Users, Dishes, Menus],
   cors: [getServerSideURL()].filter(Boolean),
-  endpoints: [testEmailEndpoint],
+  endpoints: [testEmailEndpoint, dailyMenuDownload, monthlyMenuDownload],
   globals: [Header, Footer, Chatbot, DailyMenu, MonthlyMenu],
   plugins: allPlugins,
   secret: process.env.PAYLOAD_SECRET,
